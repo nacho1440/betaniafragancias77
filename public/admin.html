@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel de administración | Betania Fragancias</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%236E2A45'/%3E%3Ctext x='50' y='70' font-size='58' fill='%23D2AB78' text-anchor='middle' font-family='Georgia,serif'%3EB%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ciruela:#6E2A45; --ciruela-oscuro:#4A1B30; --ciruela-claro:#8C4361;
+    --bronce:#B8884B; --bronce-claro:#D2AB78;
+    --arena:#F7EFE4; --arena-profunda:#ECE0D1;
+    --tinta:#2B231F; --tinta-suave:#6B5D52;
+    --blanco:#FFFFFF;
+    --exito:#4C7A52; --exito-bg:#E7F0E8;
+    --alerta:#B5832F; --alerta-bg:#FAF1DD;
+    --peligro:#B3433F; --peligro-bg:#F8E9E8;
+    --font-display:'Fraunces',Georgia,serif;
+    --font-body:'Albert Sans','Segoe UI',sans-serif;
+    --radio-sm:8px; --radio-md:14px; --radio-lg:22px;
+    --sombra-sm:0 2px 10px rgba(43,35,31,0.07);
+    --sombra-md:0 10px 30px rgba(43,35,31,0.12);
+    --sombra-lg:0 20px 55px rgba(43,35,31,0.2);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--arena); color:var(--tinta); font-family:var(--font-body); line-height:1.5; -webkit-font-smoothing:antialiased;}
+  body.modal-open{overflow:hidden;}
+  h1,h2{font-family:var(--font-display); font-weight:600; color:var(--ciruela-oscuro); margin:0 0 4px;}
+  img{max-width:100%; display:block;}
+  .muted{color:var(--tinta-suave);}
+  :focus-visible{outline:2.5px solid var(--bronce); outline-offset:2px; border-radius:4px;}
+
+  /* ---------- Auth screen ---------- */
+  .auth-screen{min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;}
+  .auth-card{background:var(--blanco); border-radius:var(--radio-lg); padding:40px 34px; max-width:380px; width:100%; box-shadow:var(--sombra-md); text-align:center;}
+  .auth-card h1{font-size:1.5rem;}
+  .auth-card .muted{margin-bottom:24px; display:block;}
+  .auth-form{text-align:left;}
+  .auth-form h2{font-size:1.1rem; margin-bottom:16px;}
+
+  /* ---------- Forms ---------- */
+  label{display:block; font-size:0.85rem; font-weight:600; color:var(--tinta-suave); margin-bottom:14px;}
+  input[type=text], input[type=password], input[type=number], input[type=tel], input[type=file], select, textarea{
+    display:block; width:100%; margin-top:6px; padding:11px 13px; border:1.5px solid var(--arena-profunda); border-radius:var(--radio-sm); font-family:var(--font-body); font-size:0.95rem; color:var(--tinta); background:var(--arena);
+  }
+  textarea{resize:vertical; min-height:60px;}
+  .form-row{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 24px; border-radius:100px; font-family:var(--font-body); font-size:0.92rem; font-weight:600; border:1.5px solid transparent; cursor:pointer; transition:all .2s ease;}
+  .btn-primary{background:var(--ciruela); color:#fff;}
+  .btn-primary:hover{background:var(--ciruela-oscuro);}
+  .btn-ghost{background:transparent; border-color:var(--ciruela); color:var(--ciruela);}
+  .btn-ghost:hover{background:var(--ciruela); color:#fff;}
+  .btn-sm{padding:8px 16px; font-size:0.84rem;}
+  .btn-block{width:100%;}
+  .btn:disabled{opacity:0.5; cursor:not-allowed;}
+
+  /* ---------- App shell ---------- */
+  .admin-header{background:var(--ciruela); color:#fff; padding:16px 26px;}
+  .admin-header-inner{max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; align-items:center;}
+  .admin-brand{font-family:var(--font-display); font-size:1.2rem; font-weight:600;}
+  .admin-brand span{color:var(--bronce-claro); font-weight:400;}
+  .admin-header .btn-ghost{border-color:rgba(255,255,255,0.55); color:#fff;}
+  .admin-header .btn-ghost:hover{background:rgba(255,255,255,0.15);}
+  .admin-tabs{display:flex; gap:4px; max-width:1100px; margin:0 auto; padding:0 26px; overflow-x:auto; background:var(--blanco); border-bottom:1px solid var(--arena-profunda);}
+  .nav-link{background:none; border:none; padding:16px 18px; font-family:var(--font-body); font-size:0.92rem; font-weight:600; color:var(--tinta-suave); cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap;}
+  .nav-link.active{color:var(--ciruela); border-bottom-color:var(--ciruela);}
+  .admin-main{max-width:1100px; margin:0 auto; padding:32px 26px 80px;}
+  .admin-section{display:none;}
+  .admin-section.active{display:block;}
+  .section-header{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:24px;}
+
+  /* ---------- Dashboard ---------- */
+  .stat-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:18px; margin:24px 0;}
+  .stat-card{background:var(--blanco); border-radius:var(--radio-md); padding:22px; box-shadow:var(--sombra-sm); text-align:center;}
+  .stat-value{display:block; font-family:var(--font-display); font-size:2.1rem; font-weight:700; color:var(--ciruela);}
+  .stat-card.stat-danger .stat-value{color:var(--peligro);}
+  .stat-card.stat-accent .stat-value{color:var(--bronce);}
+  .stat-label{font-size:0.85rem; color:var(--tinta-suave);}
+  .dashboard-tip{background:var(--alerta-bg); border-radius:var(--radio-md); padding:18px 20px; font-size:0.92rem; color:var(--tinta);}
+
+  /* ---------- Table ---------- */
+  .table-wrap{background:var(--blanco); border-radius:var(--radio-md); box-shadow:var(--sombra-sm); overflow-x:auto;}
+  .admin-table{width:100%; border-collapse:collapse; font-size:0.92rem;}
+  .admin-table th{text-align:left; padding:14px 16px; background:var(--arena); color:var(--tinta-suave); font-size:0.78rem; text-transform:uppercase; letter-spacing:0.04em; font-weight:700;}
+  .admin-table td{padding:12px 16px; border-bottom:1px solid var(--arena-profunda); vertical-align:middle;}
+  .admin-table tr:last-child td{border-bottom:none;}
+  .admin-table tr.row-inactive{opacity:0.5;}
+  .cell-img img, .cell-img svg{width:42px; height:42px; border-radius:8px; object-fit:cover;}
+  .cell-actions{display:flex; gap:6px; white-space:nowrap;}
+  .icon-btn{background:var(--arena); border:none; width:32px; height:32px; border-radius:8px; cursor:pointer; font-size:0.95rem; display:inline-flex; align-items:center; justify-content:center;}
+  .icon-btn.danger{color:var(--peligro);}
+  .icon-btn:hover{background:var(--arena-profunda);}
+  .text-danger{color:var(--peligro); font-weight:700;}
+  .text-warning{color:var(--alerta); font-weight:700;}
+  .empty-msg{text-align:center; color:var(--tinta-suave); padding:36px 20px;}
+
+  /* ---------- Settings ---------- */
+  .settings-form{background:var(--blanco); border-radius:var(--radio-md); padding:26px 28px; box-shadow:var(--sombra-sm); margin-bottom:24px; max-width:560px;}
+  .settings-form h2{font-size:1.05rem; margin-top:0; margin-bottom:18px; padding-bottom:10px; border-bottom:1px solid var(--arena-profunda);}
+  .settings-form h2:not(:first-child){margin-top:28px;}
+
+  /* ---------- Modal (producto) ---------- */
+  .modal-overlay{position:fixed; inset:0; background:rgba(43,35,31,0.5); opacity:0; pointer-events:none; transition:opacity .2s; z-index:60;}
+  .modal-overlay.active{opacity:1; pointer-events:all;}
+  .modal{position:fixed; top:50%; left:50%; transform:translate(-50%,-46%); width:min(520px,92vw); max-height:88vh; background:var(--blanco); border-radius:var(--radio-lg); z-index:70; opacity:0; pointer-events:none; transition:all .2s ease; display:flex; flex-direction:column; box-shadow:var(--sombra-lg);}
+  .modal.active{opacity:1; pointer-events:all; transform:translate(-50%,-50%);}
+  .modal-header{display:flex; justify-content:space-between; align-items:center; padding:22px 26px; border-bottom:1px solid var(--arena-profunda);}
+  .modal-header h2{margin:0; font-size:1.2rem;}
+  .modal-body{padding:22px 26px 26px; overflow-y:auto;}
+  .image-preview{margin:10px 0 16px; display:flex; align-items:center; gap:10px;}
+  .image-preview img{width:64px; height:64px; border-radius:8px; object-fit:cover; border:1px solid var(--arena-profunda);}
+
+  /* ---------- Toasts ---------- */
+  .toast-container{position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:90; display:flex; flex-direction:column; gap:10px; align-items:center; width:100%; padding:0 16px;}
+  .toast{background:var(--tinta); color:#fff; padding:13px 22px; border-radius:100px; font-size:0.9rem; font-weight:500; box-shadow:var(--sombra-md); opacity:0; transform:translateY(12px); transition:all .25s ease; max-width:90vw; text-align:center;}
+  .toast.show{opacity:1; transform:translateY(0);}
+  .toast-success{background:var(--ciruela-oscuro);}
+  .toast-error{background:var(--peligro);}
+</style>
+</head>
+<body>
+
+<div id="auth-screen" class="auth-screen">
+  <div class="auth-card">
+    <h1>Betania Fragancias</h1>
+    <span class="muted">Panel de administración</span>
+    <form id="setup-form" class="auth-form" style="display:none">
+      <h2>Creá tu contraseña</h2>
+      <label>Contraseña (mínimo 6 caracteres)<input type="password" name="password" minlength="6" required></label>
+      <label>Repetir contraseña<input type="password" name="password2" minlength="6" required></label>
+      <button type="submit" class="btn btn-primary btn-block">Crear contraseña y entrar</button>
+    </form>
+    <form id="login-form" class="auth-form" style="display:none">
+      <h2>Iniciar sesión</h2>
+      <label>Contraseña<input type="password" name="password" required autofocus></label>
+      <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+    </form>
+    <p id="auth-loading" class="muted" style="margin-top:16px;">Cargando…</p>
+  </div>
+</div>
+
+<div id="admin-app" style="display:none">
+  <header class="admin-header">
+    <div class="admin-header-inner">
+      <span class="admin-brand">Betania <span>· Panel</span></span>
+      <button id="logout-btn" class="btn btn-ghost btn-sm" type="button">Cerrar sesión</button>
+    </div>
+  </header>
+  <nav class="admin-tabs">
+    <button class="nav-link active" data-section="dashboard" type="button">Inicio</button>
+    <button class="nav-link" data-section="productos" type="button">Productos</button>
+    <button class="nav-link" data-section="pedidos" type="button">Pedidos</button>
+    <button class="nav-link" data-section="configuracion" type="button">Configuración</button>
+  </nav>
+  <main class="admin-main">
+    <section id="section-dashboard" class="admin-section active">
+      <h1>Inicio</h1>
+      <p class="muted">Un vistazo rápido a tu tienda.</p>
+      <div class="stat-grid">
+        <div class="stat-card"><span class="stat-value" id="stat-products">—</span><span class="stat-label">Productos activos</span></div>
+        <div class="stat-card"><span class="stat-value" id="stat-lowstock">—</span><span class="stat-label">Con poco stock</span></div>
+        <div class="stat-card stat-danger"><span class="stat-value" id="stat-outofstock">—</span><span class="stat-label">Sin stock</span></div>
+        <div class="stat-card stat-accent"><span class="stat-value" id="stat-neworders">—</span><span class="stat-label">Pedidos nuevos</span></div>
+      </div>
+      <div class="dashboard-tip">👋 Tip: entrá a <strong>Configuración</strong> para cargar tu WhatsApp, dirección de retiro y costo de envío. Y a <strong>Productos</strong> para agregar tu catálogo real.</div>
+    </section>
+
+    <section id="section-productos" class="admin-section">
+      <div class="section-header">
+        <div><h1>Productos</h1><p class="muted">Editá precios, stock y disponibilidad.</p></div>
+        <button class="btn btn-primary" id="new-product-btn" type="button">+ Nuevo producto</button>
+      </div>
+      <div class="table-wrap">
+        <table class="admin-table">
+          <thead><tr><th></th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Stock</th><th></th></tr></thead>
+          <tbody id="product-table-body"><tr><td colspan="6" class="empty-msg">Cargando…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="section-pedidos" class="admin-section">
+      <h1>Pedidos</h1>
+      <p class="muted">Pedidos enviados desde la tienda. El pago y la entrega se confirman por WhatsApp.</p>
+      <div class="table-wrap">
+        <table class="admin-table">
+          <thead><tr><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th><th>Entrega / Pago</th><th>Estado</th></tr></thead>
+          <tbody id="orders-table-body"><tr><td colspan="6" class="empty-msg">Cargando…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="section-configuracion" class="admin-section">
+      <h1>Configuración</h1>
+      <p class="muted">Estos datos se muestran en tu tienda y se usan para armar el mensaje de WhatsApp.</p>
+      <form id="settings-form" class="settings-form">
+        <h2>Tienda</h2>
+        <label>Nombre de la tienda<input type="text" name="storeName"></label>
+        <label>Título principal (hero)<input type="text" name="heroTitle"></label>
+        <label>Subtítulo (hero)<input type="text" name="heroSubtitle"></label>
+        <h2>Contacto y entrega</h2>
+        <label>WhatsApp, con código de país (ej: 5493564123456)<input type="text" name="whatsapp" placeholder="5493564123456"></label>
+        <label>Usuario de Instagram (sin @)<input type="text" name="instagram"></label>
+        <label>Dirección de retiro<input type="text" name="pickupAddress"></label>
+        <label>Horario de retiro<input type="text" name="pickupHours" placeholder="Ej: Lun a vie, 10 a 19hs"></label>
+        <label>Costo de envío ($)<input type="number" name="shippingCost" min="0" step="1"></label>
+        <button type="submit" class="btn btn-primary">Guardar configuración</button>
+      </form>
+      <form id="password-form" class="settings-form">
+        <h2>Cambiar contraseña</h2>
+        <label>Contraseña actual<input type="password" name="currentPassword" required></label>
+        <label>Nueva contraseña<input type="password" name="newPassword" minlength="6" required></label>
+        <label>Repetir nueva contraseña<input type="password" name="newPassword2" minlength="6" required></label>
+        <button type="submit" class="btn btn-primary">Actualizar contraseña</button>
+      </form>
+    </section>
+  </main>
+</div>
+
+<div class="modal-overlay" id="modal-overlay"></div>
+<div class="modal" id="product-modal" aria-label="Formulario de producto">
+  <div class="modal-header">
+    <h2 id="product-form-title">Nuevo producto</h2>
+    <button class="icon-btn" id="product-modal-close" type="button" aria-label="Cerrar">✕</button>
+  </div>
+  <form id="product-form" class="modal-body">
+    <label>Nombre<input type="text" name="nombre" required></label>
+    <label>Marca / Inspirado en (opcional)<input type="text" name="marca"></label>
+    <label>Categoría
+      <select name="categoria">
+        <option value="mujer">Mujer</option>
+        <option value="hombre">Hombre</option>
+        <option value="unisex">Unisex</option>
+      </select>
+    </label>
+    <label>Descripción<textarea name="descripcion" rows="2"></textarea></label>
+    <div class="form-row">
+      <label>Precio ($)<input type="number" name="precio" min="0" step="1" required></label>
+      <label>Stock<input type="number" name="stock" min="0" step="1" required></label>
+    </div>
+    <label>Imagen<input type="file" id="product-image-input" accept="image/*"></label>
+    <div class="image-preview" id="image-preview"></div>
+    <button type="submit" class="btn btn-primary btn-block">Guardar producto</button>
+  </form>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ---- Auth token (stored in sessionStorage) ---- */
+  function getToken(){ return sessionStorage.getItem('betania_admin_token'); }
+  function setToken(t){ sessionStorage.setItem('betania_admin_token', t); }
+  function clearToken(){ sessionStorage.removeItem('betania_admin_token'); }
+
+  /* ---- Authenticated fetch ---- */
+  async function apiFetch(url, opts){
+    opts = opts || {};
+    var token = getToken();
+    var headers = Object.assign({'Content-Type':'application/json'}, opts.headers || {});
+    if(token) headers['Authorization'] = 'Bearer ' + token;
+    var res = await fetch(url, Object.assign({}, opts, {headers: headers}));
+    if(res.status === 401){
+      clearToken();
+      showAuthScreen();
+    }
+    return res;
+  }
+
+  var products = [], editingId = null, currentImageData = '';
+  var moneyFmt = new Intl.NumberFormat('es-AR', { maximumFractionDigits:0 });
+
+  function money(n){ return '$' + moneyFmt.format(Math.round(n||0)); }
+  function escapeHTML(str){ return String(str==null?'':str).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function escapeAttr(str){ return escapeHTML(str); }
+  function categoryLabel(cat){ return cat === 'mujer' ? 'Mujer' : cat === 'hombre' ? 'Hombre' : 'Unisex'; }
+
+  function placeholderArt(){
+    return '<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">' +
+      '<rect x="44" y="16" width="22" height="15" rx="3" fill="#B8884B"/>' +
+      '<rect x="48" y="29" width="13" height="11" fill="#6E2A45"/>' +
+      '<path d="M36 40h38a6 6 0 0 1 6 6l5 52a8 8 0 0 1-8 9H33a8 8 0 0 1-8-9l5-52a6 6 0 0 1 6-6z" fill="#8C4361" opacity="0.85"/>' +
+      '<rect x="40" y="70" width="30" height="20" rx="3" fill="#F7EFE4" opacity="0.9"/></svg>';
+  }
+
+  /* ---------------- Auth UI ---------------- */
+  function showAuthScreen(){
+    document.getElementById('auth-screen').style.display = 'flex';
+    document.getElementById('admin-app').style.display = 'none';
+  }
+
+  async function initAuthScreen(){
+    document.getElementById('auth-loading').style.display = 'block';
+    document.getElementById('setup-form').style.display = 'none';
+    document.getElementById('login-form').style.display = 'none';
+
+    /* Check if password is set */
+    try {
+      var res = await fetch('/api/settings');
+      var data = await res.json();
+
+      document.getElementById('auth-loading').style.display = 'none';
+
+      if(!data.hasPassword){
+        /* First-time setup */
+        document.getElementById('setup-form').style.display = 'block';
+      } else if(getToken()){
+        /* Try to verify existing token */
+        var vres = await apiFetch('/api/admin/verify', {method:'POST', body:JSON.stringify({})});
+        if(vres && vres.ok){
+          showApp();
+          return;
+        }
+        document.getElementById('login-form').style.display = 'block';
+      } else {
+        document.getElementById('login-form').style.display = 'block';
+      }
+    } catch(e) {
+      document.getElementById('auth-loading').textContent = 'Error de conexión. Recargá la página.';
+    }
+  }
+
+  async function handleSetupSubmit(e){
+    e.preventDefault();
+    var form = e.target;
+    var p1 = form.elements.password.value, p2 = form.elements.password2.value;
+    if(p1.length < 6){ showToast('La contraseña debe tener al menos 6 caracteres', 'error'); return; }
+    if(p1 !== p2){ showToast('Las contraseñas no coinciden', 'error'); return; }
+
+    var btn = form.querySelector('button[type=submit]');
+    btn.disabled = true;
+    try {
+      var res = await fetch('/api/admin/setup', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({password: p1})
+      });
+      if(res.ok){
+        var data = await res.json();
+        setToken(data.token);
+        showApp();
+        showToast('Contraseña creada. ¡Bienvenida/o!', 'success');
+      } else {
+        var err = await res.json();
+        showToast(err.error || 'Error al crear la contraseña', 'error');
+      }
+    } catch(e) {
+      showToast('Error de conexión', 'error');
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  async function handleLoginSubmit(e){
+    e.preventDefault();
+    var form = e.target;
+    var password = form.elements.password.value;
+    var btn = form.querySelector('button[type=submit]');
+    btn.disabled = true;
+    try {
+      var res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({password: password})
+      });
+      if(res.ok){
+        var data = await res.json();
+        setToken(data.token);
+        showApp();
+      } else {
+        showToast('Contraseña incorrecta', 'error');
+        form.elements.password.value = '';
+        form.elements.password.focus();
+      }
+    } catch(e) {
+      showToast('Error de conexión', 'error');
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  function showApp(){
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('admin-app').style.display = 'block';
+    showSection('dashboard');
+  }
+
+  function logout(){
+    clearToken();
+    showAuthScreen();
+    initAuthScreen();
+  }
+
+  /* ---------------- Navegación ---------------- */
+  function showSection(name){
+    document.querySelectorAll('.admin-section').forEach(function(s){ s.classList.remove('active'); });
+    document.getElementById('section-' + name).classList.add('active');
+    document.querySelectorAll('.nav-link').forEach(function(l){ l.classList.toggle('active', l.dataset.section === name); });
+    if(name === 'dashboard') loadDashboard();
+    if(name === 'productos') loadProducts();
+    if(name === 'pedidos') loadOrders();
+    if(name === 'configuracion') loadSettingsForm();
+  }
+
+  /* ---------------- Dashboard ---------------- */
+  async function loadDashboard(){
+    try {
+      var [pRes, oRes] = await Promise.all([
+        apiFetch('/api/products?admin=true'),
+        apiFetch('/api/orders')
+      ]);
+      var prods = pRes && pRes.ok ? await pRes.json() : [];
+      var ords = oRes && oRes.ok ? await oRes.json() : [];
+      products = prods;
+
+      var active = prods.filter(function(p){ return p.activo !== false; });
+      document.getElementById('stat-products').textContent = active.length;
+      document.getElementById('stat-outofstock').textContent = active.filter(function(p){ return p.stock <= 0; }).length;
+      document.getElementById('stat-lowstock').textContent = active.filter(function(p){ return p.stock > 0 && p.stock <= 3; }).length;
+      document.getElementById('stat-neworders').textContent = ords.filter(function(o){ return o.estado === 'Nuevo'; }).length;
+    } catch(e) {
+      /* silently fail */
+    }
+  }
+
+  /* ---------------- Productos ---------------- */
+  async function loadProducts(){
+    document.getElementById('product-table-body').innerHTML = '<tr><td colspan="6" class="empty-msg">Cargando…</td></tr>';
+    var res = await apiFetch('/api/products?admin=true');
+    if(!res || !res.ok) return;
+    products = await res.json();
+    renderProductTable();
+  }
+
+  function renderProductTable(){
+    var tbody = document.getElementById('product-table-body');
+    if(products.length === 0){
+      tbody.innerHTML = '<tr><td colspan="6" class="empty-msg">Todavía no cargaste productos. Agregá el primero para que aparezca en tu tienda.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = products.map(function(p){
+      var img = p.imagen ? '<img src="'+escapeAttr(p.imagen)+'" alt="">' : placeholderArt();
+      return '<tr class="'+(p.activo===false?'row-inactive':'')+'">' +
+        '<td class="cell-img">'+img+'</td>' +
+        '<td>'+escapeHTML(p.nombre)+'<br><span class="muted">'+escapeHTML(p.marca||'')+'</span></td>' +
+        '<td>'+categoryLabel(p.categoria)+'</td>' +
+        '<td>'+money(p.precio)+'</td>' +
+        '<td class="'+(p.stock<=0?'text-danger':p.stock<=3?'text-warning':'')+'">'+p.stock+'</td>' +
+        '<td class="cell-actions">' +
+          '<button class="icon-btn" data-act="edit" data-id="'+p.id+'" type="button" title="Editar">✎</button>' +
+          '<button class="icon-btn" data-act="toggle" data-id="'+p.id+'" type="button" title="'+(p.activo===false?'Mostrar en la tienda':'Ocultar de la tienda')+'">'+(p.activo===false?'🚫':'👁')+'</button>' +
+          '<button class="icon-btn danger" data-act="delete" data-id="'+p.id+'" type="button" title="Eliminar">🗑</button>' +
+        '</td></tr>';
+    }).join('');
+  }
+
+  function openProductForm(id){
+    editingId = id || null;
+    var p = id ? products.find(function(x){ return x.id === id; }) : null;
+    document.getElementById('product-form-title').textContent = p ? 'Editar producto' : 'Nuevo producto';
+    var form = document.getElementById('product-form');
+    form.reset();
+    form.elements.nombre.value = p ? p.nombre : '';
+    form.elements.marca.value = p ? (p.marca||'') : '';
+    form.elements.categoria.value = p ? p.categoria : 'mujer';
+    form.elements.descripcion.value = p ? (p.descripcion||'') : '';
+    form.elements.precio.value = p ? p.precio : '';
+    form.elements.stock.value = p ? p.stock : '';
+    currentImageData = p ? (p.imagen||'') : '';
+    updateImagePreview();
+    openModal('product-modal');
+  }
+
+  function updateImagePreview(){
+    var box = document.getElementById('image-preview');
+    box.innerHTML = currentImageData ? '<img src="'+escapeAttr(currentImageData)+'" alt="Vista previa">' : '<span class="muted" style="font-size:0.85rem">Sin imagen — se va a usar un ícono genérico.</span>';
+  }
+
+  function handleImageFile(e){
+    var file = e.target.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      var img = new Image();
+      img.onload = function(){
+        var maxW = 700;
+        var scale = Math.min(1, maxW / img.width);
+        var canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        currentImageData = canvas.toDataURL('image/jpeg', 0.72);
+        updateImagePreview();
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function saveProductForm(e){
+    e.preventDefault();
+    var form = e.target;
+    var nombre = form.elements.nombre.value.trim();
+    var precio = Number(form.elements.precio.value);
+    var stock = Number(form.elements.stock.value);
+    if(!nombre){ showToast('Ingresá un nombre', 'error'); return; }
+    if(isNaN(precio) || precio < 0){ showToast('Precio inválido', 'error'); return; }
+    if(isNaN(stock) || stock < 0){ showToast('Stock inválido', 'error'); return; }
+
+    var btn = form.querySelector('button[type=submit]');
+    btn.disabled = true;
+    btn.textContent = 'Guardando…';
+
+    var payload = {
+      nombre: nombre,
+      marca: form.elements.marca.value.trim(),
+      categoria: form.elements.categoria.value,
+      descripcion: form.elements.descripcion.value.trim(),
+      precio: precio,
+      stock: stock,
+      imagen: currentImageData
+    };
+
+    try {
+      var res;
+      if(editingId){
+        res = await apiFetch('/api/products/' + editingId, {method:'PUT', body:JSON.stringify(payload)});
+      } else {
+        payload.activo = true;
+        res = await apiFetch('/api/products', {method:'POST', body:JSON.stringify(payload)});
+      }
+      if(res && res.ok){
+        closeModal('product-modal');
+        await loadProducts();
+        showToast('Producto guardado', 'success');
+      } else {
+        var err = res ? await res.json() : {};
+        showToast(err.error || 'Error al guardar el producto', 'error');
+      }
+    } catch(e) {
+      showToast('Error de conexión', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Guardar producto';
+    }
+  }
+
+  async function deleteProductConfirm(id){
+    var p = products.find(function(x){ return x.id === id; });
+    if(!p) return;
+    if(confirm('¿Eliminar "'+p.nombre+'"? Esta acción no se puede deshacer.')){
+      try {
+        var res = await apiFetch('/api/products/' + id, {method:'DELETE'});
+        if(res && res.ok){
+          await loadProducts();
+          showToast('Producto eliminado', 'success');
+        } else {
+          showToast('Error al eliminar', 'error');
+        }
+      } catch(e) {
+        showToast('Error de conexión', 'error');
+      }
+    }
+  }
+
+  async function toggleActive(id){
+    var p = products.find(function(x){ return x.id === id; });
+    if(!p) return;
+    try {
+      var res = await apiFetch('/api/products/' + id, {
+        method: 'PUT',
+        body: JSON.stringify({activo: p.activo === false ? true : false})
+      });
+      if(res && res.ok){
+        await loadProducts();
+      }
+    } catch(e) {
+      showToast('Error de conexión', 'error');
+    }
+  }
+
+  /* ---------------- Pedidos ---------------- */
+  async function loadOrders(){
+    document.getElementById('orders-table-body').innerHTML = '<tr><td colspan="6" class="empty-msg">Cargando…</td></tr>';
+    var res = await apiFetch('/api/orders');
+    if(!res || !res.ok) return;
+    var orders = await res.json();
+    renderOrdersTable(orders);
+  }
+
+  function renderOrdersTable(orders){
+    var tbody = document.getElementById('orders-table-body');
+    if(orders.length === 0){
+      tbody.innerHTML = '<tr><td colspan="6" class="empty-msg">Todavía no llegaron pedidos. Cuando alguien compre, va a aparecer acá.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = orders.map(function(o){
+      var fecha = new Date(o.fecha || o.createdAt);
+      var fechaStr = fecha.toLocaleDateString('es-AR') + ' ' + fecha.toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'});
+      var itemsStr = (o.items || []).map(function(i){ return i.qty + 'x ' + escapeHTML(i.nombre); }).join('<br>');
+      var estados = ['Nuevo','Confirmado','Entregado','Cancelado'];
+      var options = estados.map(function(s){ return '<option value="'+s+'" '+(o.estado===s?'selected':'')+'>'+s+'</option>'; }).join('');
+      return '<tr>' +
+        '<td>'+fechaStr+'</td>' +
+        '<td>'+escapeHTML(o.nombre)+'<br><span class="muted">'+escapeHTML(o.telefono)+'</span></td>' +
+        '<td>'+itemsStr+'</td>' +
+        '<td>$'+Math.round(o.total||0).toLocaleString('es-AR')+'</td>' +
+        '<td>'+(o.entrega==='envio'?'Envío':'Retiro')+' · '+(o.pago==='efectivo'?'Efectivo':'Tarjeta')+'</td>' +
+        '<td><select data-act="order-status" data-id="'+o.id+'">'+options+'</select></td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  async function updateOrderStatus(id, estado){
+    try {
+      await apiFetch('/api/orders/' + id, {
+        method: 'PUT',
+        body: JSON.stringify({estado: estado})
+      });
+    } catch(e) {
+      showToast('Error al actualizar el estado', 'error');
+    }
+  }
+
+  /* ---------------- Configuración ---------------- */
+  async function loadSettingsForm(){
+    try {
+      var res = await fetch('/api/settings');
+      if(!res.ok) return;
+      var settings = await res.json();
+      var form = document.getElementById('settings-form');
+      form.elements.storeName.value = settings.storeName || '';
+      form.elements.heroTitle.value = settings.heroTitle || '';
+      form.elements.heroSubtitle.value = settings.heroSubtitle || '';
+      form.elements.whatsapp.value = settings.whatsapp || '';
+      form.elements.instagram.value = settings.instagram || '';
+      form.elements.pickupAddress.value = settings.pickupAddress || '';
+      form.elements.pickupHours.value = settings.pickupHours || '';
+      form.elements.shippingCost.value = settings.shippingCost || 0;
+    } catch(e) { /* silently fail */ }
+  }
+
+  async function saveSettingsForm(e){
+    e.preventDefault();
+    var form = e.target;
+    var payload = {
+      storeName: form.elements.storeName.value.trim(),
+      heroTitle: form.elements.heroTitle.value.trim(),
+      heroSubtitle: form.elements.heroSubtitle.value.trim(),
+      whatsapp: form.elements.whatsapp.value.trim(),
+      instagram: form.elements.instagram.value.trim(),
+      pickupAddress: form.elements.pickupAddress.value.trim(),
+      pickupHours: form.elements.pickupHours.value.trim(),
+      shippingCost: Number(form.elements.shippingCost.value) || 0
+    };
+    var btn = form.querySelector('button[type=submit]');
+    btn.disabled = true;
+    try {
+      var res = await apiFetch('/api/settings', {method:'PUT', body:JSON.stringify(payload)});
+      if(res && res.ok){
+        showToast('Configuración guardada', 'success');
+      } else {
+        showToast('Error al guardar', 'error');
+      }
+    } catch(e) {
+      showToast('Error de conexión', 'error');
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  async function handleChangePassword(e){
+    e.preventDefault();
+    var form = e.target;
+    var current = form.elements.currentPassword.value;
+    var next = form.elements.newPassword.value;
+    var next2 = form.elements.newPassword2.value;
+    if(next.length < 6){ showToast('La nueva contraseña debe tener al menos 6 caracteres', 'error'); return; }
+    if(next !== next2){ showToast('Las contraseñas no coinciden', 'error'); return; }
+
+    var btn = form.querySelector('button[type=submit]');
+    btn.disabled = true;
+    try {
+      var res = await apiFetch('/api/admin/change-password', {
+        method: 'POST',
+        body: JSON.stringify({currentPassword: current, newPassword: next})
+      });
+      if(res && res.ok){
+        var data = await res.json();
+        setToken(data.token);
+        form.reset();
+        showToast('Contraseña actualizada', 'success');
+      } else {
+        var err = res ? await res.json() : {};
+        showToast(err.error || 'Error al cambiar la contraseña', 'error');
+      }
+    } catch(e) {
+      showToast('Error de conexión', 'error');
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  /* ---------------- Modales genéricos ---------------- */
+  function openModal(id){
+    document.getElementById(id).classList.add('active');
+    document.getElementById('modal-overlay').classList.add('active');
+    document.body.classList.add('modal-open');
+  }
+  function closeModal(id){
+    document.getElementById(id).classList.remove('active');
+    document.getElementById('modal-overlay').classList.remove('active');
+    document.body.classList.remove('modal-open');
+  }
+
+  /* ---------------- Toasts ---------------- */
+  function showToast(msg, type){
+    var container = document.getElementById('toast-container');
+    var el = document.createElement('div');
+    el.className = 'toast toast-' + (type||'success');
+    el.textContent = msg;
+    container.appendChild(el);
+    requestAnimationFrame(function(){ el.classList.add('show'); });
+    setTimeout(function(){ el.classList.remove('show'); setTimeout(function(){ el.remove(); }, 300); }, 3200);
+  }
+
+  /* ---------------- Eventos ---------------- */
+  function attachEvents(){
+    document.getElementById('setup-form').addEventListener('submit', handleSetupSubmit);
+    document.getElementById('login-form').addEventListener('submit', handleLoginSubmit);
+    document.getElementById('logout-btn').addEventListener('click', logout);
+    document.querySelectorAll('.nav-link').forEach(function(l){ l.addEventListener('click', function(){ showSection(l.dataset.section); }); });
+
+    document.getElementById('new-product-btn').addEventListener('click', function(){ openProductForm(null); });
+    document.getElementById('product-modal-close').addEventListener('click', function(){ closeModal('product-modal'); });
+    document.getElementById('modal-overlay').addEventListener('click', function(){ closeModal('product-modal'); });
+    document.getElementById('product-image-input').addEventListener('change', handleImageFile);
+    document.getElementById('product-form').addEventListener('submit', saveProductForm);
+
+    document.getElementById('product-table-body').addEventListener('click', function(e){
+      var btn = e.target.closest('button[data-act]');
+      if(!btn) return;
+      var id = btn.dataset.id;
+      if(btn.dataset.act === 'edit') openProductForm(id);
+      if(btn.dataset.act === 'delete') deleteProductConfirm(id);
+      if(btn.dataset.act === 'toggle') toggleActive(id);
+    });
+
+    document.getElementById('orders-table-body').addEventListener('change', function(e){
+      var sel = e.target.closest('select[data-act="order-status"]');
+      if(sel) updateOrderStatus(sel.dataset.id, sel.value);
+    });
+
+    document.getElementById('settings-form').addEventListener('submit', saveSettingsForm);
+    document.getElementById('password-form').addEventListener('submit', handleChangePassword);
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    attachEvents();
+    initAuthScreen();
+  });
+})();
+</script>
+</body>
+</html>

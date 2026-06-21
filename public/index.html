@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Betania Fragancias | Perfumería online</title>
+<meta name="description" content="Catálogo de perfumes árabes de Betania Fragancias. Elegí tus fragancias, armá tu pedido y enviamos a todo el país o coordinamos retiro por WhatsApp.">
+<link rel="icon" href="images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ciruela:#6E2A45;
+    --ciruela-oscuro:#4A1B30;
+    --ciruela-claro:#8C4361;
+    --bronce:#B8884B;
+    --bronce-claro:#D2AB78;
+    --bronce-suave:#E8C98A;
+    --arena:#F7EFE4;
+    --arena-profunda:#ECE0D1;
+    --tinta:#2B231F;
+    --tinta-suave:#6B5D52;
+    --blanco:#FFFFFF;
+    --noche:#0E0408;
+    --noche-media:#1A0A13;
+    --exito:#4C7A52; --exito-bg:#E7F0E8;
+    --alerta:#B5832F; --alerta-bg:#FAF1DD;
+    --peligro:#B3433F; --peligro-bg:#F8E9E8;
+    --font-display:'Fraunces',Georgia,serif;
+    --font-body:'Albert Sans','Segoe UI',sans-serif;
+    --radio-sm:8px; --radio-md:16px; --radio-lg:28px;
+    --sombra-sm:0 2px 10px rgba(43,35,31,0.07);
+    --sombra-md:0 10px 30px rgba(43,35,31,0.12);
+    --sombra-lg:0 20px 55px rgba(43,35,31,0.18);
+    --ancho:1180px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--arena); color:var(--tinta);
+    font-family:var(--font-body); line-height:1.55; -webkit-font-smoothing:antialiased;
+  }
+  body.modal-open{overflow:hidden;}
+  img{max-width:100%; display:block;}
+  a{color:inherit;}
+  h1,h2,h3{font-family:var(--font-display); margin:0 0 0.4em; font-weight:600; color:var(--ciruela-oscuro);}
+  .contenedor{max-width:var(--ancho); margin:0 auto; padding:0 24px;}
+  .muted{color:var(--tinta-suave);}
+  :focus-visible{outline:2.5px solid var(--bronce); outline-offset:2px; border-radius:4px;}
+  @media (prefers-reduced-motion: reduce){ *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;} html{scroll-behavior:auto;} }
+
+  /* ---------- Header ---------- */
+  .site-header{
+    position:sticky; top:0; z-index:40;
+    background:rgba(14,4,8,0.96);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(184,136,75,0.2);
+  }
+  .header-inner{display:flex; align-items:center; justify-content:space-between; padding:10px 24px; max-width:var(--ancho); margin:0 auto;}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
+  .brand-logo{
+    height:50px; width:50px; border-radius:50%; object-fit:cover;
+    border:2px solid rgba(210,171,120,0.45);
+    box-shadow:0 0 0 4px rgba(184,136,75,0.1);
+    flex-shrink:0;
+  }
+  .brand-text{display:flex; flex-direction:column; line-height:1.1;}
+  .brand-name{font-family:var(--font-display); font-size:1.25rem; font-weight:600; color:var(--bronce-suave);}
+  .brand-sub{font-size:0.58rem; letter-spacing:0.24em; color:rgba(210,171,120,0.7); font-weight:600; margin-top:1px;}
+  .main-nav{display:flex; gap:30px;}
+  .main-nav a{
+    text-decoration:none; font-weight:500; font-size:0.9rem;
+    color:rgba(247,239,228,0.75); position:relative; padding:4px 0;
+    transition:color .2s;
+  }
+  .main-nav a:hover{color:var(--bronce-claro);}
+  .header-actions{display:flex; align-items:center; gap:8px;}
+  .icon-btn{
+    background:none; border:none; cursor:pointer; padding:8px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--bronce-claro); position:relative; transition:background .2s;
+  }
+  .icon-btn:hover{background:rgba(184,136,75,0.15);}
+  .cart-count{
+    position:absolute; top:-2px; right:-2px; background:var(--bronce); color:#fff;
+    font-size:0.66rem; font-weight:700; min-width:18px; height:18px;
+    border-radius:50%; display:none; align-items:center; justify-content:center; padding:0 3px;
+  }
+  .nav-toggle{display:none;}
+  @media (max-width:760px){
+    .main-nav{
+      position:fixed; top:70px; left:0; right:0; background:var(--noche);
+      flex-direction:column; gap:0; padding:8px 24px;
+      box-shadow:0 20px 40px rgba(0,0,0,0.5);
+      transform:translateY(-12px); opacity:0; pointer-events:none; transition:all .25s;
+    }
+    .main-nav.open{transform:translateY(0); opacity:1; pointer-events:all;}
+    .main-nav a{padding:14px 0; border-bottom:1px solid rgba(184,136,75,0.12); color:var(--arena);}
+    .nav-toggle{display:flex;}
+  }
+
+  /* ---------- Botones ---------- */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:13px 26px; border-radius:100px; font-family:var(--font-body);
+    font-size:0.95rem; font-weight:600; letter-spacing:0.01em;
+    border:1.5px solid transparent; cursor:pointer; transition:all .2s ease;
+    text-decoration:none; white-space:nowrap;
+  }
+  .btn-primary{background:var(--ciruela); color:#fff;}
+  .btn-primary:hover{background:var(--ciruela-oscuro);}
+  .btn-ghost{background:transparent; border-color:var(--ciruela); color:var(--ciruela);}
+  .btn-ghost:hover{background:var(--ciruela); color:#fff;}
+  .btn-gold{background:var(--bronce); color:var(--ciruela-oscuro); border-color:var(--bronce);}
+  .btn-gold:hover{background:var(--bronce-claro); border-color:var(--bronce-claro);}
+  .btn-outline-white{background:transparent; border-color:rgba(255,255,255,0.55); color:#fff;}
+  .btn-outline-white:hover{background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.85);}
+  .btn-lg{padding:17px 34px; font-size:1.05rem;}
+  .btn-block{width:100%;}
+  .btn:disabled,.btn.disabled{opacity:0.5; cursor:not-allowed; pointer-events:none;}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding:68px 0 80px;
+    background:
+      radial-gradient(ellipse 70% 60% at 80% 30%, rgba(184,136,75,0.14) 0%, transparent 65%),
+      radial-gradient(ellipse 50% 50% at 10% 75%, rgba(110,42,69,0.25) 0%, transparent 65%),
+      linear-gradient(155deg, #0E0408 0%, #1A0A13 30%, #2A0F1E 60%, #3D1529 100%);
+    position:relative; overflow:hidden;
+  }
+  .hero::before{
+    content:'';
+    position:absolute; inset:0;
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        transparent 0, transparent 60px,
+        rgba(184,136,75,0.025) 60px, rgba(184,136,75,0.025) 61px
+      );
+    pointer-events:none;
+  }
+  .hero-inner{
+    display:grid; grid-template-columns:1.05fr 0.95fr;
+    align-items:center; gap:48px; position:relative; z-index:1;
+  }
+  .shipping-pill{
+    display:inline-flex; align-items:center; gap:8px;
+    background:rgba(184,136,75,0.14); border:1px solid rgba(210,171,120,0.35);
+    border-radius:100px; padding:7px 16px;
+    color:var(--bronce-claro); font-size:0.78rem; font-weight:700;
+    letter-spacing:0.06em; text-transform:uppercase; margin-bottom:18px;
+  }
+  .hero-kicker{
+    display:block; font-size:0.75rem; letter-spacing:0.22em; text-transform:uppercase;
+    color:rgba(210,171,120,0.6); font-weight:600; margin-bottom:14px;
+  }
+  .hero h1{
+    font-size:clamp(2.3rem,4.5vw,3.6rem); line-height:1.06;
+    margin-bottom:18px; color:#fff; font-weight:600;
+  }
+  .hero h1 span{
+    display:block; font-style:italic; color:var(--bronce-claro);
+    font-size:clamp(2.5rem,5vw,4rem);
+  }
+  .hero-subtitle{
+    font-size:1.02rem; color:rgba(247,239,228,0.72);
+    margin-bottom:34px; max-width:420px; line-height:1.68;
+  }
+  .hero-actions{display:flex; gap:14px; flex-wrap:wrap;}
+
+  /* ---------- Hero carousel ---------- */
+  .hero-carousel{position:relative;}
+  .carousel-wrapper{
+    position:relative; overflow:hidden; border-radius:20px;
+    height:480px;
+    box-shadow:0 32px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(184,136,75,0.22);
+  }
+  .carousel-track{
+    display:flex; height:100%;
+    transition:transform 0.65s cubic-bezier(0.25,0.46,0.45,0.94);
+  }
+  .carousel-slide{min-width:100%; flex-shrink:0; position:relative; overflow:hidden; background:#0a0408;}
+  .slide-bg{
+    position:absolute; inset:-24px; z-index:0;
+    background-size:cover; background-position:center center;
+    filter:blur(22px) brightness(0.6) saturate(1.25);
+  }
+  .carousel-slide img{width:100%; height:100%; object-fit:contain; object-position:center center; display:block; image-rendering:high-quality; position:relative; z-index:1;}
+  .slide-caption{
+    position:absolute; bottom:0; left:0; right:0; z-index:2;
+    background:linear-gradient(transparent 0%, rgba(10,4,8,0.82) 100%);
+    padding:52px 22px 22px;
+    color:#fff;
+  }
+  .slide-brand{
+    font-size:0.68rem; letter-spacing:0.16em; text-transform:uppercase;
+    color:var(--bronce-claro); font-weight:700; margin-bottom:4px;
+  }
+  .slide-name{font-family:var(--font-display); font-size:1.35rem; font-weight:600; margin:0; color:#fff;}
+  .carousel-btn{
+    position:absolute; top:50%; transform:translateY(-50%);
+    background:rgba(14,4,8,0.45); border:1px solid rgba(247,239,228,0.3);
+    border-radius:50%; width:44px; height:44px;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    color:#fff; backdrop-filter:blur(8px); transition:all .22s; z-index:5;
+  }
+  .carousel-btn:hover{background:rgba(184,136,75,0.4); border-color:rgba(210,171,120,0.7);}
+  .carousel-btn-prev{left:12px;}
+  .carousel-btn-next{right:12px;}
+  .carousel-dots{display:flex; gap:7px; justify-content:center; margin-top:14px;}
+  .carousel-dot{
+    width:8px; height:8px; border-radius:100px;
+    background:rgba(247,239,228,0.25); border:none; cursor:pointer; padding:0;
+    transition:all .35s ease;
+  }
+  .carousel-dot.active{background:var(--bronce-claro); width:24px;}
+
+  @media (max-width:900px){
+    .hero{padding:50px 0 60px;}
+    .hero-inner{grid-template-columns:1fr; text-align:center; gap:36px;}
+    .hero-subtitle{margin-left:auto; margin-right:auto;}
+    .hero-actions{justify-content:center;}
+    .shipping-pill{justify-content:center;}
+    .hero-carousel{order:-1; max-width:360px; margin:0 auto;}
+    .carousel-wrapper{height:380px;}
+  }
+
+  /* ---------- Shipping strip ---------- */
+  .shipping-strip{
+    background:linear-gradient(90deg, var(--noche) 0%, #2A0F1E 50%, var(--noche) 100%);
+    padding:14px 24px;
+    display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:12px 44px;
+    border-bottom:1px solid rgba(184,136,75,0.15);
+  }
+  .strip-item{
+    display:flex; align-items:center; gap:9px;
+    color:rgba(247,239,228,0.85); font-size:0.83rem; font-weight:600;
+    letter-spacing:0.01em;
+  }
+  .strip-item svg{color:var(--bronce-claro); flex-shrink:0;}
+
+  /* ---------- Secciones genéricas ---------- */
+  section{padding:70px 0;}
+  .section-title{font-size:clamp(1.6rem,3vw,2.1rem); text-align:center; margin-bottom:8px;}
+  .section-lead{text-align:center; color:var(--tinta-suave); max-width:520px; margin:0 auto 36px;}
+
+  /* ---------- Catálogo ---------- */
+  .catalogo-section{background:var(--blanco);}
+  .catalogo-controls{display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap; margin-bottom:8px;}
+  .filter-chips{display:flex; gap:10px; flex-wrap:wrap;}
+  .chip{
+    border:1.5px solid var(--arena-profunda); background:var(--arena); color:var(--tinta);
+    padding:9px 20px; border-radius:100px; font-family:var(--font-body);
+    font-size:0.88rem; font-weight:600; cursor:pointer; transition:all .15s;
+  }
+  .chip:hover{border-color:var(--bronce);}
+  .chip.active{background:var(--ciruela); border-color:var(--ciruela); color:#fff;}
+  .search-box{
+    display:flex; align-items:center; gap:8px; background:var(--arena);
+    border:1.5px solid var(--arena-profunda); border-radius:100px; padding:9px 18px; min-width:220px;
+  }
+  .search-box svg{flex-shrink:0; color:var(--tinta-suave);}
+  .search-box input{border:none; background:none; outline:none; font-family:var(--font-body); font-size:0.92rem; width:100%; color:var(--tinta);}
+  .product-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(235px,1fr)); gap:26px; margin-top:34px;}
+  .product-card{
+    background:var(--blanco); border:1px solid var(--arena-profunda);
+    border-radius:var(--radio-md); overflow:hidden; box-shadow:var(--sombra-sm);
+    transition:transform .25s ease, box-shadow .25s ease; display:flex; flex-direction:column;
+  }
+  .product-card:hover{transform:translateY(-5px); box-shadow:var(--sombra-md);}
+  .product-card.is-out{opacity:0.62;}
+  .product-img{
+    position:relative; aspect-ratio:1/1; background:var(--arena-profunda);
+    display:flex; align-items:center; justify-content:center; overflow:hidden;
+  }
+  .product-img img{width:100%; height:100%; object-fit:cover;}
+  .placeholder-art{width:55%; height:55%; opacity:0.55;}
+  .badge{position:absolute; top:12px; left:12px; font-size:0.68rem; font-weight:700; padding:5px 11px; border-radius:100px; letter-spacing:0.01em;}
+  .badge-disponible{background:var(--exito-bg); color:var(--exito);}
+  .badge-bajo{background:var(--alerta-bg); color:var(--alerta);}
+  .badge-agotado{background:var(--peligro-bg); color:var(--peligro);}
+  .product-body{padding:18px 18px 20px; display:flex; flex-direction:column; gap:4px; flex:1;}
+  .product-brand{font-size:0.72rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--tinta-suave); font-weight:600;}
+  .product-name{font-size:1.12rem; font-weight:600; margin:0;}
+  .product-price{font-size:1.18rem; font-weight:700; color:var(--ciruela); margin:6px 0 14px; font-family:var(--font-display);}
+  .btn-add{margin-top:auto;}
+  .empty-msg{text-align:center; color:var(--tinta-suave); padding:50px 20px; grid-column:1/-1; font-size:1.02rem;}
+
+  /* ---------- Cómo se arma tu pedido ---------- */
+  .how-section{background:var(--arena);}
+  .how-steps{display:grid; grid-template-columns:repeat(3,1fr); gap:30px; margin-top:40px;}
+  .how-step{
+    background:var(--blanco); border-radius:var(--radio-md); padding:32px 26px;
+    text-align:center; box-shadow:var(--sombra-sm); position:relative;
+  }
+  .how-num{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:40px; height:40px; border-radius:50%;
+    background:linear-gradient(135deg, var(--ciruela), var(--ciruela-oscuro));
+    color:#fff; font-family:var(--font-display); font-size:1.1rem; font-weight:600;
+    margin-bottom:14px;
+  }
+  .how-eyebrow{font-family:var(--font-display); font-style:italic; font-size:0.95rem; color:var(--bronce); font-weight:600; display:block; margin-bottom:10px;}
+  .how-step h3{font-size:1.2rem; margin-bottom:8px;}
+  .how-step p{color:var(--tinta-suave); font-size:0.95rem; margin:0;}
+  @media (max-width:760px){.how-steps{grid-template-columns:1fr;}}
+
+  /* ---------- Contacto ---------- */
+  .contact-section{padding-bottom:90px;}
+  .contact-inner{
+    background:linear-gradient(135deg, #1A0A13 0%, #2A0F1E 40%, #4A1B30 100%);
+    border-radius:var(--radio-lg); padding:52px 44px; color:#fff;
+    display:grid; grid-template-columns:1.2fr 1fr; gap:40px; align-items:center;
+    box-shadow:var(--sombra-lg);
+    position:relative; overflow:hidden;
+  }
+  .contact-inner::before{
+    content:'';
+    position:absolute; top:-30%; right:-5%; width:400px; height:400px;
+    background:radial-gradient(circle, rgba(184,136,75,0.1) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .contact-inner h2{color:#fff;}
+  .contact-inner .section-title{text-align:left;}
+  #pickup-info{color:rgba(255,255,255,0.78); margin-bottom:0; position:relative;}
+  #pickup-info a{color:var(--bronce-claro); text-decoration:underline;}
+  .contact-links{display:flex; flex-direction:column; gap:14px; position:relative;}
+  .contact-links .btn{width:100%;}
+  .contact-links .btn-primary{background:var(--bronce); color:var(--ciruela-oscuro);}
+  .contact-links .btn-primary:hover{background:var(--bronce-claro);}
+  .contact-links .btn-ghost{border-color:rgba(255,255,255,0.4); color:#fff;}
+  .contact-links .btn-ghost:hover{background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.7);}
+  @media (max-width:760px){
+    .contact-inner{grid-template-columns:1fr; padding:40px 26px; text-align:center;}
+    .contact-inner .section-title{text-align:center;}
+  }
+
+  /* ---------- Footer ---------- */
+  .site-footer{
+    background:var(--noche);
+    border-top:1px solid rgba(184,136,75,0.15);
+    padding:28px 0; text-align:center;
+    color:rgba(247,239,228,0.4); font-size:0.85rem;
+  }
+  .site-footer a{color:rgba(210,171,120,0.55); text-decoration:none;}
+  .site-footer a:hover{color:var(--bronce-claro);}
+
+  /* ---------- Overlay / Drawer / Modal ---------- */
+  .overlay{position:fixed; inset:0; background:rgba(10,4,8,0.65); opacity:0; pointer-events:none; transition:opacity .25s; z-index:50;}
+  .overlay.active{opacity:1; pointer-events:all;}
+  .cart-drawer{position:fixed; top:0; right:0; bottom:0; width:min(420px,100%); background:var(--blanco); z-index:60; display:flex; flex-direction:column; transform:translateX(100%); transition:transform .3s ease; box-shadow:var(--sombra-lg);}
+  .cart-drawer.active{transform:translateX(0);}
+  .drawer-header{display:flex; align-items:center; justify-content:space-between; padding:22px 24px; border-bottom:1px solid var(--arena-profunda);}
+  .drawer-header h2{margin:0; font-size:1.3rem;}
+  .drawer-body{flex:1; overflow-y:auto; padding:16px 24px;}
+  .drawer-footer{padding:20px 24px 26px; border-top:1px solid var(--arena-profunda);}
+  .cart-subtotal-row{display:flex; justify-content:space-between; font-size:1.1rem; font-weight:700; margin-bottom:16px; font-family:var(--font-display);}
+  .cart-line{display:flex; gap:12px; padding:16px 0; border-bottom:1px solid var(--arena-profunda);}
+  .cart-line-img{width:60px; height:60px; border-radius:var(--radio-sm); background:var(--arena); flex-shrink:0; overflow:hidden; display:flex; align-items:center; justify-content:center;}
+  .cart-line-img img{width:100%; height:100%; object-fit:cover;}
+  .cart-line-info{flex:1;}
+  .cart-line-name{font-weight:600; margin:0 0 2px; font-size:0.95rem;}
+  .cart-line-price{color:var(--tinta-suave); font-size:0.84rem; margin:0 0 8px;}
+  .stepper{display:inline-flex; align-items:center; gap:10px; border:1.5px solid var(--arena-profunda); border-radius:100px; padding:3px 6px;}
+  .stepper button{width:24px; height:24px; border-radius:50%; border:none; background:var(--arena); cursor:pointer; font-size:1rem; line-height:1; display:flex; align-items:center; justify-content:center; color:var(--ciruela);}
+  .stepper button:disabled{opacity:0.4; cursor:not-allowed;}
+  .stepper span{min-width:14px; text-align:center; font-weight:600; font-size:0.9rem;}
+  .cart-line-right{text-align:right; display:flex; flex-direction:column; justify-content:space-between; align-items:flex-end;}
+  .cart-line-total{font-weight:700; margin:0; font-size:0.95rem;}
+  .link-remove{background:none; border:none; color:var(--peligro); font-size:0.78rem; cursor:pointer; padding:0; text-decoration:underline; font-family:var(--font-body);}
+
+  .modal{position:fixed; top:50%; left:50%; transform:translate(-50%,-46%); width:min(560px,92vw); max-height:88vh; background:var(--blanco); border-radius:var(--radio-lg); z-index:70; opacity:0; pointer-events:none; transition:all .25s ease; display:flex; flex-direction:column; box-shadow:var(--sombra-lg);}
+  .modal.active{opacity:1; pointer-events:all; transform:translate(-50%,-50%);}
+  .modal-header{display:flex; justify-content:space-between; align-items:center; padding:24px 28px; border-bottom:1px solid var(--arena-profunda);}
+  .modal-header h2{margin:0; font-size:1.35rem;}
+  .modal-body{padding:24px 28px 28px; overflow-y:auto;}
+  fieldset{border:none; padding:0; margin:0 0 24px;}
+  legend{font-family:var(--font-display); font-weight:600; font-size:1.02rem; color:var(--ciruela-oscuro); margin-bottom:12px; padding:0;}
+  .modal-body label{display:block; font-size:0.86rem; font-weight:600; color:var(--tinta-suave); margin-bottom:14px;}
+  .modal-body input[type=text], .modal-body input[type=tel], .modal-body input[type=email], .modal-body textarea{
+    display:block; width:100%; margin-top:6px; padding:12px 14px; border:1.5px solid var(--arena-profunda); border-radius:var(--radio-sm); font-family:var(--font-body); font-size:0.95rem; color:var(--tinta); background:var(--arena);
+  }
+  .modal-body textarea{resize:vertical; min-height:60px;}
+  .radio-row{display:flex; align-items:center; gap:10px; font-weight:500; color:var(--tinta); margin-bottom:10px; cursor:pointer;}
+  .radio-row input{width:18px; height:18px; accent-color:var(--ciruela);}
+  .info-box{background:var(--arena); border-radius:var(--radio-sm); padding:12px 14px; font-size:0.86rem; color:var(--tinta-suave); margin:6px 0 14px;}
+  .checkout-total-row{display:flex; justify-content:space-between; align-items:center; font-size:1.25rem; font-weight:700; font-family:var(--font-display); margin:6px 0 22px; padding-top:14px; border-top:1.5px dashed var(--arena-profunda);}
+
+  /* ---------- Toasts ---------- */
+  .toast-container{position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:90; display:flex; flex-direction:column; gap:10px; align-items:center; width:100%; padding:0 16px;}
+  .toast{background:var(--tinta); color:#fff; padding:13px 22px; border-radius:100px; font-size:0.9rem; font-weight:500; box-shadow:var(--sombra-md); opacity:0; transform:translateY(12px); transition:all .25s ease; max-width:90vw; text-align:center;}
+  .toast.show{opacity:1; transform:translateY(0);}
+  .toast-success{background:var(--ciruela-oscuro);}
+  .toast-error{background:var(--peligro);}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="#" class="brand">
+      <img src="images/logo.png" alt="Betania Fragancias" class="brand-logo">
+      <div class="brand-text">
+        <span class="brand-name">Betania</span>
+        <span class="brand-sub">FRAGANCIAS</span>
+      </div>
+    </a>
+    <nav class="main-nav" id="main-nav">
+      <a href="#catalogo">Catálogo</a>
+      <a href="#como-comprar">Cómo comprar</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="cart-btn" aria-label="Ver carrito">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 4h2l2.4 12.4a2 2 0 0 0 2 1.6h7.2a2 2 0 0 0 2-1.6L20 8H6"/><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="17" cy="20" r="1.4" fill="currentColor"/></svg>
+        <span class="cart-count" id="cart-count">0</span>
+      </button>
+      <button class="icon-btn nav-toggle" id="nav-toggle" aria-label="Abrir menú">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- ====== HERO ====== -->
+  <section class="hero">
+    <div class="contenedor hero-inner">
+      <div class="hero-text">
+        <span class="shipping-pill">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          Enviamos a todo el país
+        </span>
+        <span class="hero-kicker">Perfumería árabe online</span>
+        <h1 id="hero-title">Encontrá tu<span>fragancia ideal</span></h1>
+        <p class="hero-subtitle" id="hero-subtitle">Perfumes árabes seleccionados, al mejor precio. Envíos a todo el país o retiro en el local.</p>
+        <div class="hero-actions">
+          <a href="#catalogo" class="btn btn-gold btn-lg">Ver catálogo</a>
+          <a href="#como-comprar" class="btn btn-outline-white btn-lg">¿Cómo comprar?</a>
+        </div>
+      </div>
+
+      <div class="hero-carousel">
+        <div class="carousel-wrapper">
+          <div class="carousel-track" id="carousel-track">
+            <div class="carousel-slide">
+              <div class="slide-bg" style="background-image:url('images/perfume-asad.png')"></div>
+              <img src="images/perfume-asad.png" alt="Asad - Lattafa">
+              <div class="slide-caption">
+                <div class="slide-brand">Lattafa</div>
+                <p class="slide-name">Asad</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <div class="slide-bg" style="background-image:url('images/perfume-mandarin-sky.png')"></div>
+              <img src="images/perfume-mandarin-sky.png" alt="Mandarin Sky">
+              <div class="slide-caption">
+                <div class="slide-brand">Odyssey</div>
+                <p class="slide-name">Mandarin Sky</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <div class="slide-bg" style="background-image:url('images/perfume-kamrah.png')"></div>
+              <img src="images/perfume-kamrah.png" alt="Kamrah">
+              <div class="slide-caption">
+                <div class="slide-brand">Lattafa</div>
+                <p class="slide-name">Kamrah</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <div class="slide-bg" style="background-image:url('images/perfume-her-confession.png')"></div>
+              <img src="images/perfume-her-confession.png" alt="Her Confession">
+              <div class="slide-caption">
+                <div class="slide-brand">Lattafa</div>
+                <p class="slide-name">Her Confession</p>
+              </div>
+            </div>
+          </div>
+          <button class="carousel-btn carousel-btn-prev" id="carousel-prev" aria-label="Anterior">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button class="carousel-btn carousel-btn-next" id="carousel-next" aria-label="Siguiente">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+        </div>
+        <div class="carousel-dots" id="carousel-dots">
+          <button class="carousel-dot active" aria-label="Diapositiva 1"></button>
+          <button class="carousel-dot" aria-label="Diapositiva 2"></button>
+          <button class="carousel-dot" aria-label="Diapositiva 3"></button>
+          <button class="carousel-dot" aria-label="Diapositiva 4"></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== SHIPPING STRIP ====== -->
+  <div class="shipping-strip">
+    <div class="strip-item">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      Envíos a todo el país
+    </div>
+    <div class="strip-item">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Atención personalizada
+    </div>
+    <div class="strip-item">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Compra 100% segura
+    </div>
+    <div class="strip-item">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      Efectivo o tarjeta
+    </div>
+  </div>
+
+  <!-- ====== CATÁLOGO ====== -->
+  <section class="catalogo-section" id="catalogo">
+    <div class="contenedor">
+      <h2 class="section-title">Catálogo</h2>
+      <p class="section-lead">Sumá tus fragancias favoritas al carrito. El stock se actualiza en tiempo real.</p>
+      <div class="catalogo-controls">
+        <div class="filter-chips" id="filter-chips">
+          <button class="chip active" data-cat="todas" type="button">Todas</button>
+          <button class="chip" data-cat="mujer" type="button">Mujer</button>
+          <button class="chip" data-cat="hombre" type="button">Hombre</button>
+          <button class="chip" data-cat="unisex" type="button">Unisex</button>
+        </div>
+        <div class="search-box">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input type="search" id="search-input" placeholder="Buscar perfume o marca...">
+        </div>
+      </div>
+      <div class="product-grid" id="product-grid"><p class="empty-msg">Cargando catálogo…</p></div>
+    </div>
+  </section>
+
+  <!-- ====== CÓMO COMPRAR ====== -->
+  <section class="how-section" id="como-comprar">
+    <div class="contenedor">
+      <h2 class="section-title">Cómo se arma tu pedido</h2>
+      <p class="section-lead">Como toda fragancia, tu compra se revela en tres etapas.</p>
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="how-num">1</div>
+          <h3>Elegís tus perfumes</h3>
+          <p>Sumá los que quieras al carrito, las veces que quieras.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-num">2</div>
+          <h3>Armás tu pedido</h3>
+          <p>Elegís envío a todo el país o retiro en el local, y si pagás en efectivo o con tarjeta.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-num">3</div>
+          <h3>Cerramos por WhatsApp</h3>
+          <p>Te escribimos para confirmar el pago y coordinar la entrega.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== CONTACTO ====== -->
+  <section class="contact-section" id="contacto">
+    <div class="contenedor">
+      <div class="contact-inner">
+        <div>
+          <h2 class="section-title">Contacto</h2>
+          <p id="pickup-info">Coordinamos envíos a todo el país o retiro en el local por WhatsApp.</p>
+        </div>
+        <div class="contact-links">
+          <a id="contact-whatsapp-link" class="btn btn-primary disabled" target="_blank" rel="noopener">Escribinos por WhatsApp</a>
+          <a id="contact-instagram-link" class="btn btn-ghost" href="https://www.instagram.com/betania_fragancias/" target="_blank" rel="noopener">Seguinos en Instagram</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="contenedor">
+    <p>&copy; <span id="current-year"></span> <span id="footer-store-name">Betania Fragancias</span> &nbsp;·&nbsp; Perfumería árabe online &nbsp;·&nbsp; Envíos a todo el país</p>
+  </div>
+</footer>
+
+<div class="overlay" id="overlay"></div>
+
+<aside class="cart-drawer" id="cart-drawer" aria-label="Carrito de compras">
+  <div class="drawer-header">
+    <h2>Tu carrito</h2>
+    <button class="icon-btn" id="cart-close" aria-label="Cerrar carrito" style="color:var(--tinta-suave);">✕</button>
+  </div>
+  <div class="drawer-body" id="cart-items"></div>
+  <div class="drawer-footer">
+    <div class="cart-subtotal-row"><span>Subtotal</span><span id="cart-subtotal">$0</span></div>
+    <button class="btn btn-primary btn-block" id="checkout-btn" type="button">Continuar</button>
+  </div>
+</aside>
+
+<div class="modal" id="checkout-modal" aria-label="Finalizar pedido">
+  <div class="modal-header">
+    <h2>Finalizar pedido</h2>
+    <button class="icon-btn" id="checkout-close" aria-label="Cerrar" style="color:var(--tinta-suave);">✕</button>
+  </div>
+  <form id="checkout-form" class="modal-body">
+    <fieldset>
+      <legend>Tus datos</legend>
+      <label>Nombre completo<input type="text" name="nombre" required></label>
+      <label>Teléfono / WhatsApp<input type="tel" name="telefono" required></label>
+    </fieldset>
+    <fieldset>
+      <legend>Entrega</legend>
+      <label class="radio-row"><input type="radio" name="entrega" value="retiro" checked> Retiro en el local</label>
+      <label class="radio-row"><input type="radio" name="entrega" value="envio"> Envío a domicilio · Todo el país</label>
+      <div class="info-box" id="pickup-summary"></div>
+      <div id="direccion-field" style="display:none">
+        <label>Dirección completa<input type="text" name="direccion" placeholder="Calle, número, ciudad, provincia"></label>
+        <p class="muted" id="shipping-cost-note" style="font-size:0.85rem; margin-top:-8px;"></p>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Forma de pago</legend>
+      <label class="radio-row"><input type="radio" name="pago" value="efectivo" checked> Efectivo</label>
+      <label class="radio-row"><input type="radio" name="pago" value="tarjeta"> Tarjeta</label>
+      <p class="muted" style="font-size:0.85rem;">El cobro se coordina al confirmar el pedido por WhatsApp.</p>
+    </fieldset>
+    <fieldset>
+      <label>Notas para tu pedido (opcional)<textarea name="notas" rows="2" placeholder="Ej: timbre, horario de entrega, etc."></textarea></label>
+    </fieldset>
+    <div class="checkout-total-row"><span>Total</span><span id="checkout-total">$0</span></div>
+    <button type="submit" class="btn btn-primary btn-block btn-lg" id="submit-order-btn">Enviar pedido por WhatsApp</button>
+  </form>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ---- Carousel ---- */
+  function initCarousel(){
+    var track = document.getElementById('carousel-track');
+    if(!track) return;
+    var slides = track.querySelectorAll('.carousel-slide');
+    var dots = document.querySelectorAll('.carousel-dot');
+    var current = 0;
+    var total = slides.length;
+    var timer;
+
+    function goTo(idx){
+      current = (idx + total) % total;
+      track.style.transform = 'translateX(-' + (current * 100) + '%)';
+      dots.forEach(function(d, i){ d.classList.toggle('active', i === current); });
+    }
+
+    function next(){ goTo(current + 1); }
+    function prev(){ goTo(current - 1); }
+    function startAuto(){ timer = setInterval(next, 4800); }
+    function resetAuto(){ clearInterval(timer); startAuto(); }
+
+    document.getElementById('carousel-prev').addEventListener('click', function(){ prev(); resetAuto(); });
+    document.getElementById('carousel-next').addEventListener('click', function(){ next(); resetAuto(); });
+    dots.forEach(function(d, i){ d.addEventListener('click', function(){ goTo(i); resetAuto(); }); });
+
+    var touchStartX = 0;
+    track.addEventListener('touchstart', function(e){ touchStartX = e.touches[0].clientX; }, {passive:true});
+    track.addEventListener('touchend', function(e){
+      var delta = touchStartX - e.changedTouches[0].clientX;
+      if(Math.abs(delta) > 45){ delta > 0 ? next() : prev(); resetAuto(); }
+    }, {passive:true});
+
+    startAuto();
+  }
+
+  /* ---- State ---- */
+  var products = [], settings = {}, cart = [];
+  var activeCategory = 'todas', searchTerm = '';
+  var moneyFmt = new Intl.NumberFormat('es-AR', { maximumFractionDigits:0 });
+
+  function money(n){ return '$' + moneyFmt.format(Math.round(n||0)); }
+  function escapeHTML(str){ return String(str==null?'':str).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function escapeAttr(str){ return escapeHTML(str); }
+
+  /* ---- Cart persists in localStorage (per user) ---- */
+  function loadCart(){ try{ var r = localStorage.getItem('betania_cart_v2'); return r ? JSON.parse(r) : []; } catch(e){ return []; } }
+  function saveCart(){ localStorage.setItem('betania_cart_v2', JSON.stringify(cart)); }
+
+  /* ---- API ---- */
+  async function fetchProducts(){
+    try{
+      var res = await fetch('/api/products');
+      if(!res.ok) throw new Error('API error');
+      return await res.json();
+    } catch(e){
+      return [];
+    }
+  }
+
+  async function fetchSettings(){
+    try{
+      var res = await fetch('/api/settings');
+      if(!res.ok) throw new Error('API error');
+      return await res.json();
+    } catch(e){
+      return {};
+    }
+  }
+
+  async function postOrder(order){
+    var res = await fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(order)
+    });
+    if(!res.ok){
+      var err = await res.json().catch(function(){ return {}; });
+      throw new Error(err.error || 'Error al guardar el pedido');
+    }
+    return await res.json();
+  }
+
+  /* ---- UI ---- */
+  function placeholderArt(){
+    return '<svg class="placeholder-art" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">' +
+      '<rect x="44" y="16" width="22" height="15" rx="3" fill="#B8884B"/>' +
+      '<rect x="48" y="29" width="13" height="11" fill="#6E2A45"/>' +
+      '<path d="M36 40h38a6 6 0 0 1 6 6l5 52a8 8 0 0 1-8 9H33a8 8 0 0 1-8-9l5-52a6 6 0 0 1 6-6z" fill="#8C4361" opacity="0.85"/>' +
+      '<rect x="40" y="70" width="30" height="20" rx="3" fill="#F7EFE4" opacity="0.9"/></svg>';
+  }
+
+  function stockBadge(p){
+    if(p.stock <= 0) return { text:'Agotado', cls:'agotado' };
+    if(p.stock <= 3) return { text:'Últimas ' + p.stock + ' unidades', cls:'bajo' };
+    return { text:'En stock', cls:'disponible' };
+  }
+
+  function applySettingsToUI(){
+    if(settings.storeName) document.title = settings.storeName + ' | Perfumería online';
+    var h1 = document.getElementById('hero-title');
+    if(settings.heroTitle) h1.textContent = settings.heroTitle;
+
+    if(settings.heroSubtitle) document.getElementById('hero-subtitle').textContent = settings.heroSubtitle;
+    if(settings.storeName) document.getElementById('footer-store-name').textContent = settings.storeName;
+
+    var waBtn = document.getElementById('contact-whatsapp-link');
+    if(settings.whatsapp){
+      waBtn.href = 'https://wa.me/' + settings.whatsapp.replace(/\D/g,'');
+      waBtn.classList.remove('disabled');
+    } else {
+      waBtn.removeAttribute('href');
+      waBtn.classList.add('disabled');
+    }
+
+    var igBtn = document.getElementById('contact-instagram-link');
+    if(settings.instagram){ igBtn.href = 'https://www.instagram.com/' + settings.instagram.replace('@','') + '/'; }
+
+    var pickupInfo = document.getElementById('pickup-info');
+    if(settings.pickupAddress){
+      pickupInfo.innerHTML = escapeHTML(settings.pickupAddress) + (settings.pickupHours ? '<br>' + escapeHTML(settings.pickupHours) : '') +
+        '<br><a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(settings.pickupAddress) + '" target="_blank" rel="noopener">Ver en el mapa</a>';
+    } else {
+      pickupInfo.textContent = 'Coordinamos envíos a todo el país o retiro en el local por WhatsApp.';
+    }
+  }
+
+  function renderProducts(){
+    var grid = document.getElementById('product-grid');
+    if(products.length === 0){
+      grid.innerHTML = '<p class="empty-msg">Estamos actualizando el catálogo. Volvé a pasar en un rato o escribinos por WhatsApp.</p>';
+      return;
+    }
+    var term = searchTerm.trim().toLowerCase();
+    var list = products
+      .filter(function(p){ return activeCategory === 'todas' || p.categoria === activeCategory; })
+      .filter(function(p){ return !term || p.nombre.toLowerCase().indexOf(term) > -1 || (p.marca||'').toLowerCase().indexOf(term) > -1; });
+    if(list.length === 0){
+      grid.innerHTML = '<p class="empty-msg">No encontramos perfumes con ese filtro. Probá con otra categoría o borrá la búsqueda.</p>';
+      return;
+    }
+    grid.innerHTML = list.map(productCardHTML).join('');
+  }
+
+  function productCardHTML(p){
+    var badge = stockBadge(p);
+    var out = p.stock <= 0;
+    var img = p.imagen ? '<img src="'+escapeAttr(p.imagen)+'" alt="'+escapeAttr(p.nombre)+'" loading="lazy">' : placeholderArt();
+    return '<article class="product-card '+(out?'is-out':'')+'">' +
+      '<div class="product-img">'+img+'<span class="badge badge-'+badge.cls+'">'+badge.text+'</span></div>' +
+      '<div class="product-body">' +
+        (p.marca ? '<span class="product-brand">'+escapeHTML(p.marca)+'</span>' : '') +
+        '<h3 class="product-name">'+escapeHTML(p.nombre)+'</h3>' +
+        '<p class="product-price">'+money(p.precio)+'</p>' +
+        '<button type="button" class="btn btn-primary btn-add" data-act="add" data-id="'+p.id+'" '+(out?'disabled':'')+'>'+(out?'Sin stock':'Agregar al carrito')+'</button>' +
+      '</div></article>';
+  }
+
+  function addToCart(id){
+    var p = products.find(function(x){ return x.id === id; });
+    if(!p || p.stock <= 0) return;
+    var existing = cart.find(function(c){ return c.id === id; });
+    var currentQty = existing ? existing.qty : 0;
+    if(currentQty >= p.stock){ showToast('No hay más stock disponible de este producto', 'error'); return; }
+    if(existing) existing.qty += 1; else cart.push({ id:id, qty:1 });
+    saveCart();
+    updateCartCount();
+    renderCartDrawer();
+    showToast(p.nombre + ' agregado al carrito', 'success');
+  }
+
+  function changeCartQty(id, delta){
+    var line = cart.find(function(c){ return c.id === id; });
+    var p = products.find(function(x){ return x.id === id; });
+    if(!line || !p) return;
+    var newQty = line.qty + delta;
+    if(newQty <= 0){ removeFromCart(id); return; }
+    if(newQty > p.stock){ showToast('No hay más stock disponible', 'error'); return; }
+    line.qty = newQty;
+    saveCart();
+    updateCartCount();
+    renderCartDrawer();
+  }
+
+  function removeFromCart(id){
+    cart = cart.filter(function(c){ return c.id !== id; });
+    saveCart();
+    updateCartCount();
+    renderCartDrawer();
+  }
+
+  function updateCartCount(){
+    var count = cart.reduce(function(s,c){ return s + c.qty; }, 0);
+    var el = document.getElementById('cart-count');
+    el.textContent = count;
+    el.style.display = count > 0 ? 'flex' : 'none';
+  }
+
+  function cartSubtotal(){
+    return cart.reduce(function(sum, c){
+      var p = products.find(function(x){ return x.id === c.id; });
+      return sum + (p ? p.precio * c.qty : 0);
+    }, 0);
+  }
+
+  function renderCartDrawer(){
+    var container = document.getElementById('cart-items');
+    if(cart.length === 0){
+      container.innerHTML = '<p class="empty-msg">Tu carrito está vacío. Elegí algún perfume del catálogo para arrancar.</p>';
+      document.getElementById('cart-subtotal').textContent = money(0);
+      return;
+    }
+    var html = '';
+    cart.forEach(function(c){
+      var p = products.find(function(x){ return x.id === c.id; });
+      if(!p) return;
+      var lineTotal = p.precio * c.qty;
+      html += '<div class="cart-line">' +
+        '<div class="cart-line-img">'+(p.imagen ? '<img src="'+escapeAttr(p.imagen)+'" alt="">' : placeholderArt())+'</div>' +
+        '<div class="cart-line-info">' +
+          '<p class="cart-line-name">'+escapeHTML(p.nombre)+'</p>' +
+          '<p class="cart-line-price">'+money(p.precio)+' c/u</p>' +
+          '<div class="stepper"><button type="button" data-act="cart-dec" data-id="'+p.id+'" aria-label="Restar">−</button><span>'+c.qty+'</span><button type="button" data-act="cart-inc" data-id="'+p.id+'" aria-label="Sumar" '+(c.qty>=p.stock?'disabled':'')+'>+</button></div>' +
+        '</div>' +
+        '<div class="cart-line-right"><p class="cart-line-total">'+money(lineTotal)+'</p><button type="button" class="link-remove" data-act="cart-remove" data-id="'+p.id+'">Quitar</button></div>' +
+      '</div>';
+    });
+    container.innerHTML = html;
+    document.getElementById('cart-subtotal').textContent = money(cartSubtotal());
+  }
+
+  function showToast(msg, type){
+    var container = document.getElementById('toast-container');
+    var el = document.createElement('div');
+    el.className = 'toast toast-' + (type||'success');
+    el.textContent = msg;
+    container.appendChild(el);
+    requestAnimationFrame(function(){ el.classList.add('show'); });
+    setTimeout(function(){ el.classList.remove('show'); setTimeout(function(){ el.remove(); }, 300); }, 3200);
+  }
+
+  function openCart(){
+    document.getElementById('cart-drawer').classList.add('active');
+    document.getElementById('overlay').classList.add('active');
+    document.body.classList.add('modal-open');
+  }
+  function closeCart(){
+    document.getElementById('cart-drawer').classList.remove('active');
+    document.getElementById('overlay').classList.remove('active');
+    document.body.classList.remove('modal-open');
+  }
+  function openCheckout(){
+    if(cart.length === 0){ showToast('Tu carrito está vacío', 'error'); return; }
+    document.getElementById('cart-drawer').classList.remove('active');
+    document.getElementById('checkout-form').reset();
+    handleEntregaChange();
+    updatePickupSummary();
+    document.getElementById('checkout-modal').classList.add('active');
+    document.getElementById('overlay').classList.add('active');
+    document.body.classList.add('modal-open');
+  }
+  function closeCheckout(){
+    document.getElementById('checkout-modal').classList.remove('active');
+    document.getElementById('overlay').classList.remove('active');
+    document.body.classList.remove('modal-open');
+  }
+
+  function updatePickupSummary(){
+    var box = document.getElementById('pickup-summary');
+    if(settings.pickupAddress){
+      box.innerHTML = '<strong>Punto de retiro:</strong> '+escapeHTML(settings.pickupAddress)+(settings.pickupHours ? ' · '+escapeHTML(settings.pickupHours) : '');
+    } else {
+      box.textContent = 'Coordinamos el punto de retiro por WhatsApp.';
+    }
+  }
+
+  function updateCheckoutTotal(){
+    var entregaInput = document.querySelector('input[name="entrega"]:checked');
+    var isEnvio = entregaInput && entregaInput.value === 'envio';
+    var subtotal = cartSubtotal();
+    var shippingCost = isEnvio ? Number(settings.shippingCost||0) : 0;
+    document.getElementById('shipping-cost-note').textContent = isEnvio ? (shippingCost > 0 ? 'Costo de envío: ' + money(shippingCost) : 'El costo de envío se coordina por WhatsApp según la zona.') : '';
+    document.getElementById('checkout-total').textContent = money(subtotal + shippingCost);
+  }
+
+  function handleEntregaChange(){
+    var entregaInput = document.querySelector('input[name="entrega"]:checked');
+    var isEnvio = entregaInput && entregaInput.value === 'envio';
+    document.getElementById('direccion-field').style.display = isEnvio ? 'block' : 'none';
+    document.getElementById('pickup-summary').style.display = isEnvio ? 'none' : 'block';
+    var direccionInput = document.querySelector('#checkout-form [name="direccion"]');
+    if(direccionInput) direccionInput.required = isEnvio;
+    updateCheckoutTotal();
+  }
+
+  function buildWhatsappMessage(order){
+    var lines = [];
+    lines.push('Hola! Quiero hacer este pedido en ' + (settings.storeName||'la tienda') + ':');
+    lines.push('');
+    order.items.forEach(function(i){ lines.push('• ' + i.nombre + ' x' + i.qty + ' - ' + money(i.precio * i.qty)); });
+    lines.push('');
+    if(order.entrega === 'envio' && order.shipping > 0) lines.push('Envío: ' + money(order.shipping));
+    lines.push('Total: ' + money(order.total));
+    lines.push('');
+    lines.push('Entrega: ' + (order.entrega === 'envio' ? 'Envío a domicilio (todo el país)' : 'Retiro en el local'));
+    if(order.entrega === 'envio' && order.direccion) lines.push('Dirección: ' + order.direccion);
+    lines.push('Pago: ' + (order.pago === 'efectivo' ? 'Efectivo' : 'Tarjeta'));
+    lines.push('');
+    lines.push('Nombre: ' + order.nombre);
+    lines.push('Teléfono: ' + order.telefono);
+    if(order.notas) lines.push('Notas: ' + order.notas);
+    return lines.join('\n');
+  }
+
+  async function submitOrder(e){
+    e.preventDefault();
+    var form = e.target;
+    var nombre = form.elements.nombre.value.trim();
+    var telefono = form.elements.telefono.value.trim();
+    var entrega = form.elements.entrega.value;
+    var direccion = form.elements.direccion ? form.elements.direccion.value.trim() : '';
+    var pago = form.elements.pago.value;
+    var notas = form.elements.notas.value.trim();
+
+    if(!nombre || !telefono){ showToast('Completá tu nombre y teléfono', 'error'); return; }
+    if(entrega === 'envio' && !direccion){ showToast('Ingresá la dirección de envío', 'error'); return; }
+    if(cart.length === 0){ showToast('Tu carrito está vacío', 'error'); return; }
+    if(!settings.whatsapp){ showToast('La tienda todavía no configuró su WhatsApp', 'error'); return; }
+
+    var items = [];
+    cart.forEach(function(c){
+      var p = products.find(function(x){ return x.id === c.id; });
+      if(p) items.push({ id:p.id, nombre:p.nombre, precio:p.precio, qty:c.qty });
+    });
+    var subtotal = items.reduce(function(s,i){ return s + i.precio*i.qty; }, 0);
+    var shippingCost = entrega === 'envio' ? Number(settings.shippingCost||0) : 0;
+    var total = subtotal + shippingCost;
+
+    var submitBtn = document.getElementById('submit-order-btn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Enviando…';
+
+    try {
+      var order = {
+        nombre: nombre,
+        telefono: telefono,
+        entrega: entrega,
+        direccion: direccion,
+        pago: pago,
+        notas: notas,
+        items: items,
+        subtotal: subtotal,
+        shipping: shippingCost,
+        total: total
+      };
+
+      await postOrder(order);
+
+      var msg = buildWhatsappMessage(order);
+      var url = 'https://wa.me/' + settings.whatsapp.replace(/\D/g,'') + '?text=' + encodeURIComponent(msg);
+      window.open(url, '_blank');
+
+      cart = [];
+      saveCart();
+      renderCartDrawer();
+      updateCartCount();
+
+      /* Refresh products to reflect stock changes */
+      products = await fetchProducts();
+      renderProducts();
+
+      closeCheckout();
+      showToast('¡Pedido enviado! Te abrimos WhatsApp para confirmar.', 'success');
+    } catch(err) {
+      showToast(err.message || 'Error al enviar el pedido', 'error');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Enviar pedido por WhatsApp';
+    }
+  }
+
+  function attachEvents(){
+    document.getElementById('filter-chips').addEventListener('click', function(e){
+      var btn = e.target.closest('.chip');
+      if(!btn) return;
+      document.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('active'); });
+      btn.classList.add('active');
+      activeCategory = btn.dataset.cat;
+      renderProducts();
+    });
+    document.getElementById('search-input').addEventListener('input', function(e){ searchTerm = e.target.value; renderProducts(); });
+    document.getElementById('product-grid').addEventListener('click', function(e){
+      var btn = e.target.closest('button[data-act="add"]');
+      if(btn) addToCart(btn.dataset.id);
+    });
+    document.getElementById('cart-items').addEventListener('click', function(e){
+      var btn = e.target.closest('button[data-act]');
+      if(!btn) return;
+      var id = btn.dataset.id;
+      if(btn.dataset.act === 'cart-inc') changeCartQty(id, 1);
+      if(btn.dataset.act === 'cart-dec') changeCartQty(id, -1);
+      if(btn.dataset.act === 'cart-remove') removeFromCart(id);
+    });
+    document.getElementById('cart-btn').addEventListener('click', openCart);
+    document.getElementById('cart-close').addEventListener('click', closeCart);
+    document.getElementById('checkout-btn').addEventListener('click', openCheckout);
+    document.getElementById('checkout-close').addEventListener('click', closeCheckout);
+    document.getElementById('overlay').addEventListener('click', function(){ closeCart(); closeCheckout(); });
+    document.getElementById('checkout-form').addEventListener('submit', submitOrder);
+    document.querySelectorAll('input[name="entrega"]').forEach(function(r){ r.addEventListener('change', handleEntregaChange); });
+    document.getElementById('nav-toggle').addEventListener('click', function(){ document.getElementById('main-nav').classList.toggle('open'); });
+    document.querySelectorAll('#main-nav a').forEach(function(a){ a.addEventListener('click', function(){ document.getElementById('main-nav').classList.remove('open'); }); });
+  }
+
+  async function init(){
+    cart = loadCart();
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    var results = await Promise.all([fetchProducts(), fetchSettings()]);
+    products = results[0];
+    settings = results[1] || {};
+
+    applySettingsToUI();
+    renderProducts();
+    renderCartDrawer();
+    updateCartCount();
+    attachEvents();
+    initCarousel();
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+})();
+</script>
+</body>
+</html>
