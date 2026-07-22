@@ -240,7 +240,10 @@
     <label>Descripción<textarea name="descripcion" rows="2"></textarea></label>
     <div class="form-row">
       <label>Precio ($)<input type="number" name="precio" min="0" step="1" required></label>
-      <label>Stock<input type="number" name="stock" min="0" step="1" required></label>
+      <label>Stock actual<input type="number" name="stock" min="0" step="1" required></label>
+    </div>
+    <div class="form-row">
+      <label>Stock mínimo (aviso de poco stock)<input type="number" name="stockMinimo" min="0" step="1" required></label>
     </div>
     <label>Imagen<input type="file" id="product-image-input" accept="image/*"></label>
     <div class="image-preview" id="image-preview"></div>
@@ -422,7 +425,7 @@
       var active = prods.filter(function(p){ return p.activo !== false; });
       document.getElementById('stat-products').textContent = active.length;
       document.getElementById('stat-outofstock').textContent = active.filter(function(p){ return p.stock <= 0; }).length;
-      document.getElementById('stat-lowstock').textContent = active.filter(function(p){ return p.stock > 0 && p.stock <= 3; }).length;
+      document.getElementById('stat-lowstock').textContent = active.filter(function(p){ return p.stock > 0 && p.stock <= (p.stockMinimo != null ? p.stockMinimo : 3); }).length;
       document.getElementById('stat-neworders').textContent = ords.filter(function(o){ return o.estado === 'Nuevo'; }).length;
     } catch(e) {
       /* silently fail */
@@ -451,7 +454,7 @@
         '<td>'+escapeHTML(p.nombre)+'<br><span class="muted">'+escapeHTML(p.marca||'')+'</span></td>' +
         '<td>'+categoryLabel(p.categoria)+'</td>' +
         '<td>'+money(p.precio)+'</td>' +
-        '<td class="'+(p.stock<=0?'text-danger':p.stock<=3?'text-warning':'')+'">'+p.stock+'</td>' +
+        '<td class="'+(p.stock<=0?'text-danger':p.stock<=(p.stockMinimo!=null?p.stockMinimo:3)?'text-warning':'')+'">'+p.stock+'</td>' +
         '<td class="cell-actions">' +
           '<button class="icon-btn" data-act="edit" data-id="'+p.id+'" type="button" title="Editar">✎</button>' +
           '<button class="icon-btn" data-act="toggle" data-id="'+p.id+'" type="button" title="'+(p.activo===false?'Mostrar en la tienda':'Ocultar de la tienda')+'">'+(p.activo===false?'🚫':'👁')+'</button>' +
@@ -472,6 +475,7 @@
     form.elements.descripcion.value = p ? (p.descripcion||'') : '';
     form.elements.precio.value = p ? p.precio : '';
     form.elements.stock.value = p ? p.stock : '';
+    form.elements.stockMinimo.value = p ? (p.stockMinimo != null ? p.stockMinimo : 3) : 3;
     currentImageData = p ? (p.imagen||'') : '';
     updateImagePreview();
     openModal('product-modal');
@@ -510,9 +514,11 @@
     var nombre = form.elements.nombre.value.trim();
     var precio = Number(form.elements.precio.value);
     var stock = Number(form.elements.stock.value);
+    var stockMinimo = Number(form.elements.stockMinimo.value);
     if(!nombre){ showToast('Ingresá un nombre', 'error'); return; }
     if(isNaN(precio) || precio < 0){ showToast('Precio inválido', 'error'); return; }
     if(isNaN(stock) || stock < 0){ showToast('Stock inválido', 'error'); return; }
+    if(isNaN(stockMinimo) || stockMinimo < 0){ showToast('Stock mínimo inválido', 'error'); return; }
 
     var btn = form.querySelector('button[type=submit]');
     btn.disabled = true;
@@ -525,6 +531,7 @@
       descripcion: form.elements.descripcion.value.trim(),
       precio: precio,
       stock: stock,
+      stockMinimo: stockMinimo,
       imagen: currentImageData
     };
 

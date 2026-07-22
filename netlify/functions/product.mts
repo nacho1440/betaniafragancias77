@@ -35,6 +35,7 @@ export default async (req: Request, context: Context) => {
     if (body.descripcion !== undefined) updates.descripcion = String(body.descripcion).trim();
     if (body.precio !== undefined) updates.precio = Number(body.precio);
     if (body.stock !== undefined) updates.stock = Number(body.stock);
+    if (body.stockMinimo !== undefined) updates.stockMinimo = Number(body.stockMinimo);
     if (body.imagen !== undefined) updates.imagen = String(body.imagen);
     if (body.activo !== undefined) updates.activo = Boolean(body.activo);
 

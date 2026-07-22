@@ -23,6 +23,7 @@ export const products = pgTable("products", {
   descripcion: text("descripcion").default(""),
   precio: integer("precio").notNull().default(0),
   stock: integer("stock").notNull().default(0),
+  stockMinimo: integer("stock_minimo").notNull().default(3),
   imagen: text("imagen").default(""),
   activo: boolean("activo").notNull().default(true),
   createdAt: timestamp("created_at").defaultNow(),

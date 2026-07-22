@@ -1,0 +1,1 @@
+ALTER TABLE "products" ADD COLUMN "stock_minimo" integer DEFAULT 3 NOT NULL;

@@ -41,6 +41,7 @@ export default async (req: Request) => {
     const nombre = String(body.nombre || "").trim();
     const precio = Number(body.precio) || 0;
     const stock = Number(body.stock) || 0;
+    const stockMinimo = body.stockMinimo !== undefined ? Number(body.stockMinimo) || 0 : 3;
     if (!nombre) return jsonError("nombre is required", 400);
     if (precio < 0) return jsonError("precio invalid", 400);
     if (stock < 0) return jsonError("stock invalid", 400);
@@ -56,6 +57,7 @@ export default async (req: Request) => {
         descripcion: String(body.descripcion || "").trim(),
         precio,
         stock,
+        stockMinimo,
         imagen: String(body.imagen || ""),
         activo: body.activo !== false,
       })

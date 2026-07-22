@@ -173,7 +173,7 @@
   .hero-carousel{position:relative;}
   .carousel-wrapper{
     position:relative; overflow:hidden; border-radius:20px;
-    height:480px;
+    aspect-ratio:1/1.05; width:100%;
     box-shadow:0 32px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(184,136,75,0.22);
   }
   .carousel-track{
@@ -223,7 +223,6 @@
     .hero-actions{justify-content:center;}
     .shipping-pill{justify-content:center;}
     .hero-carousel{order:-1; max-width:360px; margin:0 auto;}
-    .carousel-wrapper{height:380px;}
   }
 
   /* ---------- Shipping strip ---------- */
@@ -267,6 +266,7 @@
     background:var(--blanco); border:1px solid var(--arena-profunda);
     border-radius:var(--radio-md); overflow:hidden; box-shadow:var(--sombra-sm);
     transition:transform .25s ease, box-shadow .25s ease; display:flex; flex-direction:column;
+    cursor:pointer;
   }
   .product-card:hover{transform:translateY(-5px); box-shadow:var(--sombra-md);}
   .product-card.is-out{opacity:0.62;}
@@ -283,6 +283,7 @@
   .product-body{padding:18px 18px 20px; display:flex; flex-direction:column; gap:4px; flex:1;}
   .product-brand{font-size:0.72rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--tinta-suave); font-weight:600;}
   .product-name{font-size:1.12rem; font-weight:600; margin:0;}
+  .product-desc{font-size:0.85rem; color:var(--tinta-suave); margin:2px 0 0; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
   .product-price{font-size:1.18rem; font-weight:700; color:var(--ciruela); margin:6px 0 14px; font-family:var(--font-display);}
   .btn-add{margin-top:auto;}
   .empty-msg{text-align:center; color:var(--tinta-suave); padding:50px 20px; grid-column:1/-1; font-size:1.02rem;}
@@ -386,6 +387,18 @@
   .radio-row input{width:18px; height:18px; accent-color:var(--ciruela);}
   .info-box{background:var(--arena); border-radius:var(--radio-sm); padding:12px 14px; font-size:0.86rem; color:var(--tinta-suave); margin:6px 0 14px;}
   .checkout-total-row{display:flex; justify-content:space-between; align-items:center; font-size:1.25rem; font-weight:700; font-family:var(--font-display); margin:6px 0 22px; padding-top:14px; border-top:1.5px dashed var(--arena-profunda);}
+
+  /* ---------- Product detail modal ---------- */
+  .product-detail-modal{width:min(680px,92vw);}
+  .product-detail-body{display:grid; grid-template-columns:1fr 1fr; gap:28px; padding:24px 28px 28px;}
+  .detail-img{aspect-ratio:1/1; background:var(--arena); border-radius:var(--radio-md); display:flex; align-items:center; justify-content:center; overflow:hidden;}
+  .detail-img img{width:100%; height:100%; object-fit:cover;}
+  .detail-img .placeholder-art{width:55%; height:55%;}
+  .detail-brand{font-size:0.78rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--tinta-suave); font-weight:600;}
+  .detail-name{font-size:1.5rem; margin:2px 0 10px;}
+  .detail-price{font-size:1.5rem; font-weight:700; color:var(--ciruela); font-family:var(--font-display); margin:0 0 14px;}
+  .detail-desc{color:var(--tinta-suave); font-size:0.95rem; line-height:1.65; margin:0 0 20px; white-space:pre-line;}
+  @media (max-width:640px){ .product-detail-body{grid-template-columns:1fr;} }
 
   /* ---------- Toasts ---------- */
   .toast-container{position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:90; display:flex; flex-direction:column; gap:10px; align-items:center; width:100%; padding:0 16px;}
@@ -634,6 +647,23 @@
 
 <div class="toast-container" id="toast-container"></div>
 
+<div class="modal product-detail-modal" id="detail-modal" aria-label="Detalle del producto">
+  <div class="modal-header">
+    <h2 id="detail-name-header">Producto</h2>
+    <button class="icon-btn" id="detail-close" aria-label="Cerrar" style="color:var(--tinta-suave);">✕</button>
+  </div>
+  <div class="product-detail-body">
+    <div class="detail-img" id="detail-img"></div>
+    <div class="detail-info">
+      <div class="detail-brand" id="detail-brand"></div>
+      <h3 class="detail-name" id="detail-name"></h3>
+      <p class="detail-price" id="detail-price"></p>
+      <p class="detail-desc" id="detail-desc"></p>
+      <button type="button" class="btn btn-primary btn-block" id="detail-add-btn">Agregar al carrito</button>
+    </div>
+  </div>
+</div>
+
 <script>
 (function(){
   'use strict';
@@ -730,8 +760,9 @@
   }
 
   function stockBadge(p){
+    var minimo = p.stockMinimo != null ? p.stockMinimo : 3;
     if(p.stock <= 0) return { text:'Agotado', cls:'agotado' };
-    if(p.stock <= 3) return { text:'Últimas ' + p.stock + ' unidades', cls:'bajo' };
+    if(p.stock <= minimo) return { text:'Últimas ' + p.stock + ' unidades', cls:'bajo' };
     return { text:'En stock', cls:'disponible' };
   }
 
@@ -785,11 +816,12 @@
     var badge = stockBadge(p);
     var out = p.stock <= 0;
     var img = p.imagen ? '<img src="'+escapeAttr(p.imagen)+'" alt="'+escapeAttr(p.nombre)+'" loading="lazy">' : placeholderArt();
-    return '<article class="product-card '+(out?'is-out':'')+'">' +
+    return '<article class="product-card '+(out?'is-out':'')+'" data-act="open-detail" data-id="'+p.id+'">' +
       '<div class="product-img">'+img+'<span class="badge badge-'+badge.cls+'">'+badge.text+'</span></div>' +
       '<div class="product-body">' +
         (p.marca ? '<span class="product-brand">'+escapeHTML(p.marca)+'</span>' : '') +
         '<h3 class="product-name">'+escapeHTML(p.nombre)+'</h3>' +
+        (p.descripcion ? '<p class="product-desc">'+escapeHTML(p.descripcion)+'</p>' : '') +
         '<p class="product-price">'+money(p.precio)+'</p>' +
         '<button type="button" class="btn btn-primary btn-add" data-act="add" data-id="'+p.id+'" '+(out?'disabled':'')+'>'+(out?'Sin stock':'Agregar al carrito')+'</button>' +
       '</div></article>';
@@ -900,6 +932,30 @@
   }
   function closeCheckout(){
     document.getElementById('checkout-modal').classList.remove('active');
+    document.getElementById('overlay').classList.remove('active');
+    document.body.classList.remove('modal-open');
+  }
+
+  function openProductDetail(id){
+    var p = products.find(function(x){ return x.id === id; });
+    if(!p) return;
+    var out = p.stock <= 0;
+    document.getElementById('detail-name-header').textContent = p.nombre;
+    document.getElementById('detail-img').innerHTML = p.imagen ? '<img src="'+escapeAttr(p.imagen)+'" alt="'+escapeAttr(p.nombre)+'">' : placeholderArt();
+    document.getElementById('detail-brand').textContent = p.marca || '';
+    document.getElementById('detail-name').textContent = p.nombre;
+    document.getElementById('detail-price').textContent = money(p.precio);
+    document.getElementById('detail-desc').textContent = p.descripcion || 'Sin descripción disponible.';
+    var addBtn = document.getElementById('detail-add-btn');
+    addBtn.dataset.id = p.id;
+    addBtn.disabled = out;
+    addBtn.textContent = out ? 'Sin stock' : 'Agregar al carrito';
+    document.getElementById('detail-modal').classList.add('active');
+    document.getElementById('overlay').classList.add('active');
+    document.body.classList.add('modal-open');
+  }
+  function closeProductDetail(){
+    document.getElementById('detail-modal').classList.remove('active');
     document.getElementById('overlay').classList.remove('active');
     document.body.classList.remove('modal-open');
   }
@@ -1029,8 +1085,10 @@
     });
     document.getElementById('search-input').addEventListener('input', function(e){ searchTerm = e.target.value; renderProducts(); });
     document.getElementById('product-grid').addEventListener('click', function(e){
-      var btn = e.target.closest('button[data-act="add"]');
-      if(btn) addToCart(btn.dataset.id);
+      var addBtn = e.target.closest('button[data-act="add"]');
+      if(addBtn){ addToCart(addBtn.dataset.id); return; }
+      var card = e.target.closest('[data-act="open-detail"]');
+      if(card) openProductDetail(card.dataset.id);
     });
     document.getElementById('cart-items').addEventListener('click', function(e){
       var btn = e.target.closest('button[data-act]');
@@ -1044,7 +1102,9 @@
     document.getElementById('cart-close').addEventListener('click', closeCart);
     document.getElementById('checkout-btn').addEventListener('click', openCheckout);
     document.getElementById('checkout-close').addEventListener('click', closeCheckout);
-    document.getElementById('overlay').addEventListener('click', function(){ closeCart(); closeCheckout(); });
+    document.getElementById('detail-close').addEventListener('click', closeProductDetail);
+    document.getElementById('detail-add-btn').addEventListener('click', function(e){ addToCart(e.target.dataset.id); closeProductDetail(); });
+    document.getElementById('overlay').addEventListener('click', function(){ closeCart(); closeCheckout(); closeProductDetail(); });
     document.getElementById('checkout-form').addEventListener('submit', submitOrder);
     document.querySelectorAll('input[name="entrega"]').forEach(function(r){ r.addEventListener('change', handleEntregaChange); });
     document.getElementById('nav-toggle').addEventListener('click', function(){ document.getElementById('main-nav').classList.toggle('open'); });
