@@ -207,8 +207,8 @@
       <p class="muted">Pedidos enviados desde la tienda. El pago y la entrega se confirman por WhatsApp.</p>
       <div class="table-wrap">
         <table class="admin-table">
-          <thead><tr><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th><th>Entrega / Pago</th><th>Estado</th></tr></thead>
-          <tbody id="orders-table-body"><tr><td colspan="6" class="empty-msg">Cargando…</td></tr></tbody>
+          <thead><tr><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th><th>Entrega / Pago</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody id="orders-table-body"><tr><td colspan="7" class="empty-msg">Cargando…</td></tr></tbody>
         </table>
       </div>
     </section>
@@ -728,7 +728,7 @@ Notas: Sin notas</pre>
 
   /* ---------------- Pedidos ---------------- */
   async function loadOrders(){
-    document.getElementById('orders-table-body').innerHTML = '<tr><td colspan="6" class="empty-msg">Cargando…</td></tr>';
+    document.getElementById('orders-table-body').innerHTML = '<tr><td colspan="7" class="empty-msg">Cargando…</td></tr>';
     var res = await apiFetch('/api/orders');
     if(!res || !res.ok) return;
     var orders = await res.json();
@@ -738,7 +738,7 @@ Notas: Sin notas</pre>
   function renderOrdersTable(orders){
     var tbody = document.getElementById('orders-table-body');
     if(orders.length === 0){
-      tbody.innerHTML = '<tr><td colspan="6" class="empty-msg">Todavía no llegaron pedidos. Cuando alguien compre, va a aparecer acá.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" class="empty-msg">Todavía no llegaron pedidos. Cuando alguien compre, va a aparecer acá.</td></tr>';
       return;
     }
     tbody.innerHTML = orders.map(function(o){
@@ -754,8 +754,25 @@ Notas: Sin notas</pre>
         '<td>$'+Math.round(o.total||0).toLocaleString('es-AR')+'</td>' +
         '<td>'+(o.entrega==='envio'?'Envío':'Retiro')+' · '+(o.pago==='efectivo'?'Efectivo':(o.pago==='mercadopago'?'Mercado Pago':'Tarjeta'))+'</td>' +
         '<td><select data-act="order-status" data-id="'+o.id+'">'+options+'</select></td>' +
+        '<td><div class="cell-actions"><button type="button" class="icon-btn danger" data-act="order-delete" data-id="'+escapeAttr(o.id)+'" aria-label="Eliminar pedido" title="Eliminar pedido">🗑</button></div></td>' +
       '</tr>';
     }).join('');
+  }
+
+  async function deleteOrderConfirm(id){
+    if(!confirm('¿Eliminar este pedido definitivamente? Esta acción no se puede deshacer.')) return;
+    try {
+      var res = await apiFetch('/api/orders/' + encodeURIComponent(id), {method:'DELETE'});
+      if(res && res.ok){
+        await loadOrders();
+        showToast('Pedido eliminado', 'success');
+      } else {
+        var err = res ? await res.json().catch(function(){ return {}; }) : {};
+        showToast(err.error || 'Error al eliminar el pedido', 'error');
+      }
+    } catch(e) {
+      showToast('Error de conexión al eliminar el pedido', 'error');
+    }
   }
 
   async function updateOrderStatus(id, estado){
@@ -893,6 +910,11 @@ Notas: Sin notas</pre>
       if(btn.dataset.act === 'edit') openProductForm(id);
       if(btn.dataset.act === 'delete') deleteProductConfirm(id);
       if(btn.dataset.act === 'toggle') toggleActive(id);
+    });
+
+    document.getElementById('orders-table-body').addEventListener('click', function(e){
+      var btn = e.target.closest('button[data-act="order-delete"]');
+      if(btn) deleteOrderConfirm(btn.dataset.id);
     });
 
     document.getElementById('orders-table-body').addEventListener('change', function(e){
