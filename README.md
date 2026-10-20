@@ -24,3 +24,6 @@ El sitio estará en `http://localhost:8888`.
 ## Variables de entorno
 
 Netlify Database se provisiona automáticamente. No se requieren variables adicionales.
+## Publicación y acceso desde otros dispositivos
+
+El sitio está configurado para publicarse en Netlify: `netlify.toml` indica que los archivos públicos están en `public/` y que la API se ejecuta desde `netlify/functions/`. Para que otras personas puedan entrar y para que el catálogo, el stock y los pedidos funcionen, el repositorio debe estar conectado a un sitio de Netlify y la base de datos de Netlify debe estar habilitada. Los cambios subidos a GitHub se reflejan en la web cuando Netlify completa correctamente el despliegue; la configuración de ese sitio y su URL pública no se determinan desde este repositorio.
