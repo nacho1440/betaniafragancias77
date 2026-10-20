@@ -649,7 +649,8 @@
       <legend>Forma de pago</legend>
       <label class="radio-row"><input type="radio" name="pago" value="efectivo" checked> Efectivo</label>
       <label class="radio-row"><input type="radio" name="pago" value="tarjeta"> Tarjeta</label>
-      <p class="muted" style="font-size:0.85rem;">El cobro se coordina al confirmar el pedido por WhatsApp.</p>
+      <label class="radio-row"><input type="radio" name="pago" value="mercadopago"> Mercado Pago</label>
+      <p class="muted" style="font-size:0.85rem;">El cobro se coordina al confirmar el pedido por WhatsApp. Si elegís Mercado Pago, te compartimos el alias en el mensaje.</p>
     </fieldset>
     <fieldset>
       <label>Notas para tu pedido (opcional)<textarea name="notas" rows="2" placeholder="Ej: timbre, horario de entrega, etc."></textarea></label>
@@ -1018,7 +1019,12 @@
     lines.push('');
     lines.push('Entrega: ' + (order.entrega === 'envio' ? 'Envío a domicilio (todo el país)' : 'Retiro en el local'));
     if(order.entrega === 'envio' && order.direccion) lines.push('Dirección: ' + order.direccion);
-    lines.push('Pago: ' + (order.pago === 'efectivo' ? 'Efectivo' : 'Tarjeta'));
+    var paymentLabels = { efectivo: 'Efectivo', tarjeta: 'Tarjeta', mercadopago: 'Mercado Pago' };
+    lines.push('Pago: ' + (paymentLabels[order.pago] || order.pago));
+    if(order.pago === 'mercadopago'){
+      lines.push('Alias de Mercado Pago: ' + (settings.transferAlias || 'Consultar alias con la tienda'));
+      lines.push('El pago se coordina por WhatsApp; esperá la confirmación de la tienda.');
+    }
     lines.push('');
     lines.push('Nombre: ' + order.nombre);
     lines.push('Teléfono: ' + order.telefono);
