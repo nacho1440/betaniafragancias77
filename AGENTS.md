@@ -32,7 +32,7 @@
 
 ## Tablas de base de datos
 
-- **`products`**: Catálogo de productos. Campos: id (text PK), nombre, marca, categoria, descripcion, precio, stock, imagen (base64), activo, created_at.
+- **`products`**: Catálogo de productos. Campos: id (text PK), nombre, marca, categoria, descripcion (detalle completo), descripcion_corta (resumen para catálogo), caracteristicas (lista opcional separada por comas), precio, stock, stock_minimo, imagen (base64), activo, created_at.
 - **`orders`**: Pedidos de clientes. Campos: id (text PK), fecha, nombre, telefono, entrega, direccion, pago, notas, items (jsonb), subtotal, shipping, total, estado, created_at.
 - **`store_settings`**: Configuración de la tienda. Una sola fila. Campos: id (serial), storeName, heroTitle, heroSubtitle, whatsapp, instagram, pickupAddress, pickupHours, shippingCost, adminPasswordHash, updatedAt.
 

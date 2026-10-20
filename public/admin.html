@@ -49,6 +49,10 @@
   }
   textarea{resize:vertical; min-height:60px;}
   .form-row{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  .characteristics-options{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:8px 0 16px;}
+  .characteristic-option{display:flex; align-items:center; gap:7px; background:var(--arena); border:1px solid var(--arena-profunda); border-radius:8px; padding:9px 10px; font-size:0.84rem; color:var(--tinta); margin:0;}
+  .characteristic-option input{accent-color:var(--ciruela); margin:0; flex-shrink:0;}
+  @media(max-width:600px){.characteristics-options{grid-template-columns:repeat(2,minmax(0,1fr));}.form-row{grid-template-columns:1fr; gap:0;}}
 
   .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 24px; border-radius:100px; font-family:var(--font-body); font-size:0.92rem; font-weight:600; border:1.5px solid transparent; cursor:pointer; transition:all .2s ease;}
   .btn-primary{background:var(--ciruela); color:#fff;}
@@ -237,7 +241,19 @@
         <option value="unisex">Unisex</option>
       </select>
     </label>
-    <label>Descripción<textarea name="descripcion" rows="2"></textarea></label>
+    <label>Descripción completa (detalle del perfume)<textarea name="descripcion" rows="3" placeholder="Notas, aroma y descripción completa del perfume"></textarea></label>
+    <label>Descripción breve (tarjeta del catálogo)<textarea name="descripcionCorta" rows="2" placeholder="Una frase corta para mostrar debajo del precio"></textarea></label>
+    <label>Características (opcional)</label>
+    <div class="characteristics-options">
+      <label class="characteristic-option"><input type="checkbox" name="caracteristicas" value="Cítrico"> Cítrico</label>
+      <label class="characteristic-option"><input type="checkbox" name="caracteristicas" value="Amaderado"> Amaderado</label>
+      <label class="characteristic-option"><input type="checkbox" name="caracteristicas" value="Intenso"> Intenso</label>
+      <label class="characteristic-option"><input type="checkbox" name="caracteristicas" value="Dulce"> Dulce</label>
+      <label class="characteristic-option"><input type="checkbox" name="caracteristicas" value="Fresco"> Fresco</label>
+      <label class="characteristic-option"><input type="checkbox" name="caracteristicas" value="Floral"> Floral</label>
+      <label class="characteristic-option"><input type="checkbox" name="caracteristicas" value="Verano"> Verano</label>
+      <label class="characteristic-option"><input type="checkbox" name="caracteristicas" value="Invierno"> Invierno</label>
+    </div>
     <div class="form-row">
       <label>Precio ($)<input type="number" name="precio" min="0" step="1" required></label>
       <label>Stock actual<input type="number" name="stock" min="0" step="1" required></label>
@@ -473,6 +489,9 @@
     form.elements.marca.value = p ? (p.marca||'') : '';
     form.elements.categoria.value = p ? p.categoria : 'mujer';
     form.elements.descripcion.value = p ? (p.descripcion||'') : '';
+    form.elements.descripcionCorta.value = p ? (p.descripcionCorta||'') : '';
+    var selectedCharacteristics = p ? String(p.caracteristicas||'').split(',').map(function(s){ return s.trim(); }) : [];
+    form.querySelectorAll('input[name="caracteristicas"]').forEach(function(input){ input.checked = selectedCharacteristics.indexOf(input.value) !== -1; });
     form.elements.precio.value = p ? p.precio : '';
     form.elements.stock.value = p ? p.stock : '';
     form.elements.stockMinimo.value = p ? (p.stockMinimo != null ? p.stockMinimo : 3) : 3;
@@ -529,6 +548,8 @@
       marca: form.elements.marca.value.trim(),
       categoria: form.elements.categoria.value,
       descripcion: form.elements.descripcion.value.trim(),
+      descripcionCorta: form.elements.descripcionCorta.value.trim(),
+      caracteristicas: Array.from(form.querySelectorAll('input[name="caracteristicas"]:checked')).map(function(input){ return input.value; }).join(', '),
       precio: precio,
       stock: stock,
       stockMinimo: stockMinimo,

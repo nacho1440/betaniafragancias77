@@ -21,6 +21,8 @@ export const products = pgTable("products", {
   marca: text("marca").default(""),
   categoria: text("categoria").notNull().default("unisex"),
   descripcion: text("descripcion").default(""),
+  descripcionCorta: text("descripcion_corta").default(""),
+  caracteristicas: text("caracteristicas").default(""),
   precio: integer("precio").notNull().default(0),
   stock: integer("stock").notNull().default(0),
   stockMinimo: integer("stock_minimo").notNull().default(3),

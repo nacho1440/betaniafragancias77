@@ -45,6 +45,7 @@ export default async (req: Request) => {
     if (!nombre) return jsonError("nombre is required", 400);
     if (precio < 0) return jsonError("precio invalid", 400);
     if (stock < 0) return jsonError("stock invalid", 400);
+    if (stockMinimo < 0) return jsonError("stockMinimo invalid", 400);
 
     const id = "p_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
     const [row] = await db
@@ -55,6 +56,8 @@ export default async (req: Request) => {
         marca: String(body.marca || "").trim(),
         categoria: String(body.categoria || "unisex"),
         descripcion: String(body.descripcion || "").trim(),
+        descripcionCorta: String(body.descripcionCorta || "").trim(),
+        caracteristicas: String(body.caracteristicas || "").trim(),
         precio,
         stock,
         stockMinimo,
