@@ -269,6 +269,9 @@
       <label class="characteristic-option"><input type="checkbox" name="caracteristicas" value="Uso diario"> Uso diario</label>
       <label class="characteristic-option"><input type="checkbox" name="caracteristicas" value="Para la noche"> Para la noche</label>
     </div>
+    <label>Otras características (opcional)
+      <textarea name="caracteristicasPersonalizadas" rows="2" placeholder="Escribí otras características separadas por comas o en líneas distintas. Ej.: avainillado, almizclado, larga duración"></textarea>
+    </label>
     <div class="form-row">
       <label>Precio ($)<input type="number" name="precio" min="0" step="1" required></label>
       <label>Stock actual<input type="number" name="stock" min="0" step="1" required></label>
@@ -505,8 +508,11 @@
     form.elements.categoria.value = p ? p.categoria : 'mujer';
     form.elements.descripcion.value = p ? (p.descripcion||'') : '';
     form.elements.descripcionCorta.value = p ? (p.descripcionCorta||'') : '';
-    var selectedCharacteristics = p ? String(p.caracteristicas||'').split(',').map(function(s){ return s.trim(); }) : [];
-    form.querySelectorAll('input[name="caracteristicas"]').forEach(function(input){ input.checked = selectedCharacteristics.indexOf(input.value) !== -1; });
+    var selectedCharacteristics = p ? String(p.caracteristicas||'').split(',').map(function(s){ return s.trim(); }).filter(Boolean) : [];
+    var characteristicInputs = Array.from(form.querySelectorAll('input[name="caracteristicas"]'));
+    var predefinedCharacteristics = characteristicInputs.map(function(input){ return input.value; });
+    characteristicInputs.forEach(function(input){ input.checked = selectedCharacteristics.indexOf(input.value) !== -1; });
+    form.elements.caracteristicasPersonalizadas.value = selectedCharacteristics.filter(function(value){ return predefinedCharacteristics.indexOf(value) === -1; }).join(', ');
     form.elements.precio.value = p ? p.precio : '';
     form.elements.stock.value = p ? p.stock : '';
     form.elements.stockMinimo.value = p ? (p.stockMinimo != null ? p.stockMinimo : 3) : 3;
@@ -564,7 +570,12 @@
       categoria: form.elements.categoria.value,
       descripcion: form.elements.descripcion.value.trim(),
       descripcionCorta: form.elements.descripcionCorta.value.trim(),
-      caracteristicas: Array.from(form.querySelectorAll('input[name="caracteristicas"]:checked')).map(function(input){ return input.value; }).join(', '),
+      caracteristicas: (function(){
+        var predefined = Array.from(form.querySelectorAll('input[name="caracteristicas"]:checked')).map(function(input){ return input.value; });
+        var custom = form.elements.caracteristicasPersonalizadas.value.split(/[,\\n]/).map(function(value){ return value.trim(); }).filter(Boolean);
+        var combined = predefined.concat(custom);
+        return combined.filter(function(value, index){ return combined.findIndex(function(other){ return other.toLowerCase() === value.toLowerCase(); }) === index; }).join(', ');
+      })(),
       precio: precio,
       stock: stock,
       stockMinimo: stockMinimo,
