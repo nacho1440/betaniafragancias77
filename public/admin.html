@@ -125,6 +125,15 @@
   .toast.show{opacity:1; transform:translateY(0);}
   .toast-success{background:var(--ciruela-oscuro);}
   .toast-error{background:var(--peligro);}
+
+  .custom-characteristics-control{margin-bottom:16px;}
+  .custom-characteristics-control>label{display:block;font-size:.86rem;font-weight:600;color:var(--tinta-suave);margin-bottom:6px;}
+  .custom-characteristics-control>input{display:block;width:100%;box-sizing:border-box;margin-top:0;padding:11px 12px;border:1.5px solid var(--arena-profunda);border-radius:var(--radio-sm);font:inherit;color:var(--tinta);background:var(--arena);}
+  .custom-characteristics-control>small{display:block;margin-top:6px;color:var(--tinta-suave);font-size:.78rem;line-height:1.4;}
+  .custom-characteristics-list{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 8px;}
+  .custom-characteristic-tag{display:inline-flex;align-items:center;gap:8px;max-width:100%;padding:5px 9px;border:1px solid var(--arena-profunda);border-radius:100px;background:var(--arena);color:var(--tinta);font-size:.82rem;overflow-wrap:anywhere;}
+  .custom-characteristic-tag span{min-width:0;overflow-wrap:anywhere;}
+  .custom-characteristic-tag button{flex-shrink:0;border:0;background:none;color:var(--tinta-suave);cursor:pointer;font-size:1rem;line-height:1;padding:0 1px;}
 </style>
 </head>
 <body>
@@ -269,9 +278,12 @@
       <label class="characteristic-option"><input type="checkbox" name="caracteristicas" value="Uso diario"> Uso diario</label>
       <label class="characteristic-option"><input type="checkbox" name="caracteristicas" value="Para la noche"> Para la noche</label>
     </div>
-    <label>Otras características (opcional)
-      <textarea name="caracteristicasPersonalizadas" rows="2" placeholder="Escribí otras características separadas por comas o en líneas distintas. Ej.: avainillado, almizclado, larga duración"></textarea>
-    </label>
+    <div class="custom-characteristics-control">
+      <label for="custom-characteristic-input">Otras características (opcional)</label>
+      <div class="custom-characteristics-list" id="custom-characteristics-list"></div>
+      <input type="text" id="custom-characteristic-input" placeholder="Escribí una característica y presioná Enter" autocomplete="off">
+      <small>Presioná Enter para agregar cada característica. Las frases largas se mantienen completas.</small>
+    </div>
     <div class="form-row">
       <label>Precio ($)<input type="number" name="precio" min="0" step="1" required></label>
       <label>Stock actual<input type="number" name="stock" min="0" step="1" required></label>
@@ -311,6 +323,7 @@
   }
 
   var products = [], editingId = null, currentImageData = '';
+  var customCharacteristics = [];
   var moneyFmt = new Intl.NumberFormat('es-AR', { maximumFractionDigits:0 });
 
   function money(n){ return '$' + moneyFmt.format(Math.round(n||0)); }
@@ -497,6 +510,50 @@
     }).join('');
   }
 
+  function renderCustomCharacteristics(){
+    var list = document.getElementById('custom-characteristics-list');
+    if(!list) return;
+    list.innerHTML = customCharacteristics.map(function(value, index){
+      return '<span class="custom-characteristic-tag"><span>'+escapeHTML(value)+'</span><button type="button" data-remove-custom-characteristic="'+index+'" aria-label="Quitar característica">×</button></span>';
+    }).join('');
+  }
+
+  function addCustomCharacteristic(value){
+    var clean = String(value || '').trim();
+    if(!clean) return;
+    if(!customCharacteristics.some(function(existing){ return existing.toLocaleLowerCase() === clean.toLocaleLowerCase(); })){
+      customCharacteristics.push(clean);
+      renderCustomCharacteristics();
+    }
+    document.getElementById('custom-characteristic-input').value = '';
+  }
+
+  function setupCustomCharacteristics(){
+    var input = document.getElementById('custom-characteristic-input');
+    var list = document.getElementById('custom-characteristics-list');
+    if(!input || input.dataset.bound === 'true') return;
+    input.dataset.bound = 'true';
+    input.addEventListener('keydown', function(event){
+      if(event.key === 'Enter'){
+        event.preventDefault();
+        addCustomCharacteristic(input.value);
+      }
+      if(event.key === 'Backspace' && !input.value && customCharacteristics.length){
+        customCharacteristics.pop();
+        renderCustomCharacteristics();
+      }
+    });
+    input.addEventListener('blur', function(){
+      if(input.value.trim()) addCustomCharacteristic(input.value);
+    });
+    list.addEventListener('click', function(event){
+      var button = event.target.closest('[data-remove-custom-characteristic]');
+      if(!button) return;
+      customCharacteristics.splice(Number(button.dataset.removeCustomCharacteristic), 1);
+      renderCustomCharacteristics();
+    });
+  }
+
   function openProductForm(id){
     editingId = id || null;
     var p = id ? products.find(function(x){ return x.id === id; }) : null;
@@ -512,7 +569,10 @@
     var characteristicInputs = Array.from(form.querySelectorAll('input[name="caracteristicas"]'));
     var predefinedCharacteristics = characteristicInputs.map(function(input){ return input.value; });
     characteristicInputs.forEach(function(input){ input.checked = selectedCharacteristics.indexOf(input.value) !== -1; });
-    form.elements.caracteristicasPersonalizadas.value = selectedCharacteristics.filter(function(value){ return predefinedCharacteristics.indexOf(value) === -1; }).join(', ');
+    customCharacteristics = selectedCharacteristics.filter(function(value){ return predefinedCharacteristics.indexOf(value) === -1; });
+    document.getElementById('custom-characteristic-input').value = '';
+    setupCustomCharacteristics();
+    renderCustomCharacteristics();
     form.elements.precio.value = p ? p.precio : '';
     form.elements.stock.value = p ? p.stock : '';
     form.elements.stockMinimo.value = p ? (p.stockMinimo != null ? p.stockMinimo : 3) : 3;
@@ -572,9 +632,8 @@
       descripcionCorta: form.elements.descripcionCorta.value.trim(),
       caracteristicas: (function(){
         var predefined = Array.from(form.querySelectorAll('input[name="caracteristicas"]:checked')).map(function(input){ return input.value; });
-        var custom = form.elements.caracteristicasPersonalizadas.value.split(/[,\\n]/).map(function(value){ return value.trim(); }).filter(Boolean);
-        var combined = predefined.concat(custom);
-        return combined.filter(function(value, index){ return combined.findIndex(function(other){ return other.toLowerCase() === value.toLowerCase(); }) === index; }).join(', ');
+        var combined = predefined.concat(customCharacteristics);
+        return combined.filter(function(value, index){ return combined.findIndex(function(other){ return other.toLocaleLowerCase() === value.toLocaleLowerCase(); }) === index; }).join(', ');
       })(),
       precio: precio,
       stock: stock,
