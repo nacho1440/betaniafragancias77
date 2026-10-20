@@ -1027,13 +1027,6 @@
       telefono: order.telefono || '',
       notas: order.notas || ''
     };
-    var template = String(settings.whatsappMessageTemplate || '').trim();
-    if(template){
-      return template.replace(/\{(tienda|productos|envio|total|entrega|direccion|pago|alias|nombre|telefono|notas)\}/g, function(match, key){
-        return values[key] == null ? '' : String(values[key]);
-      });
-    }
-
     var lines = [];
     lines.push('Hola! Quiero hacer este pedido en ' + values.tienda + ':');
     lines.push('');
