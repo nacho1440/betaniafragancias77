@@ -60,6 +60,7 @@ export const storeSettings = pgTable("store_settings", {
   pickupAddress: text("pickup_address").default(""),
   pickupHours: text("pickup_hours").default(""),
   transferAlias: text("transfer_alias").default(""),
+  whatsappMessageTemplate: text("whatsapp_message_template").default(""),
   shippingCost: integer("shipping_cost").notNull().default(0),
   adminPasswordHash: text("admin_password_hash").default(""),
   updatedAt: timestamp("updated_at").defaultNow(),
