@@ -59,6 +59,7 @@ export const storeSettings = pgTable("store_settings", {
   instagram: text("instagram").default("betania_fragancias"),
   pickupAddress: text("pickup_address").default(""),
   pickupHours: text("pickup_hours").default(""),
+  transferAlias: text("transfer_alias").default(""),
   shippingCost: integer("shipping_cost").notNull().default(0),
   adminPasswordHash: text("admin_password_hash").default(""),
   updatedAt: timestamp("updated_at").defaultNow(),
