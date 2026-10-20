@@ -220,6 +220,8 @@
         <label>Usuario de Instagram (sin @)<input type="text" name="instagram"></label>
         <label>Dirección de retiro<input type="text" name="pickupAddress"></label>
         <label>Horario de retiro<input type="text" name="pickupHours" placeholder="Ej: Lun a vie, 10 a 19hs"></label>
+        <label>Alias de Mercado Pago<input type="text" name="transferAlias" placeholder="Ej: betania.fragancias.mp"></label>
+        <p class="muted">Este alias aparecerá en el mensaje de WhatsApp cuando el cliente elija Mercado Pago.</p>
         <label>Costo de envío ($)<input type="number" name="shippingCost" min="0" step="1"></label>
         <button type="submit" class="btn btn-primary">Guardar configuración</button>
       </form>
@@ -725,7 +727,7 @@
         '<td>'+escapeHTML(o.nombre)+'<br><span class="muted">'+escapeHTML(o.telefono)+'</span></td>' +
         '<td>'+itemsStr+'</td>' +
         '<td>$'+Math.round(o.total||0).toLocaleString('es-AR')+'</td>' +
-        '<td>'+(o.entrega==='envio'?'Envío':'Retiro')+' · '+(o.pago==='efectivo'?'Efectivo':'Tarjeta')+'</td>' +
+        '<td>'+(o.entrega==='envio'?'Envío':'Retiro')+' · '+(o.pago==='efectivo'?'Efectivo':(o.pago==='mercadopago'?'Mercado Pago':'Tarjeta'))+'</td>' +
         '<td><select data-act="order-status" data-id="'+o.id+'">'+options+'</select></td>' +
       '</tr>';
     }).join('');
@@ -756,6 +758,7 @@
       form.elements.instagram.value = settings.instagram || '';
       form.elements.pickupAddress.value = settings.pickupAddress || '';
       form.elements.pickupHours.value = settings.pickupHours || '';
+      form.elements.transferAlias.value = settings.transferAlias || '';
       form.elements.shippingCost.value = settings.shippingCost || 0;
     } catch(e) { /* silently fail */ }
   }
@@ -771,6 +774,7 @@
       instagram: form.elements.instagram.value.trim(),
       pickupAddress: form.elements.pickupAddress.value.trim(),
       pickupHours: form.elements.pickupHours.value.trim(),
+      transferAlias: form.elements.transferAlias.value.trim(),
       shippingCost: Number(form.elements.shippingCost.value) || 0
     };
     var btn = form.querySelector('button[type=submit]');
