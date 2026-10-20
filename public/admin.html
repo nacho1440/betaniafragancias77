@@ -107,14 +107,12 @@
   .settings-form{background:var(--blanco); border-radius:var(--radio-md); padding:26px 28px; box-shadow:var(--sombra-sm); margin-bottom:24px; max-width:560px;}
   .settings-form h2{font-size:1.05rem; margin-top:0; margin-bottom:18px; padding-bottom:10px; border-bottom:1px solid var(--arena-profunda);}
   .settings-form h2:not(:first-child){margin-top:28px;}
-  .whatsapp-editor-help{margin:-6px 0 14px;color:var(--tinta-suave);font-size:.88rem;line-height:1.55;}
-  .whatsapp-template-input{min-height:260px;resize:vertical;background:#fff!important;line-height:1.7;font-size:.93rem!important;white-space:pre-wrap;tab-size:2;}
   .whatsapp-preview{margin:14px 0 22px;padding:16px;border:1px solid #D7E6D5;border-radius:14px;background:#EAF5E8;}
   .whatsapp-preview-heading{display:flex;align-items:center;gap:8px;margin:0 0 10px;color:#315D38;font-size:.88rem;font-weight:700;}
   .whatsapp-preview-heading:before{content:"";width:9px;height:9px;border-radius:50%;background:#4C9B59;display:inline-block;}
   .whatsapp-preview-message{margin:0;padding:14px;background:#fff;border:1px solid #DCE8DA;border-radius:10px;color:#26352A;font-size:.93rem;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere;min-height:100px;}
   .whatsapp-preview-note{display:block;margin-top:9px;color:#526B55;font-size:.78rem;line-height:1.45;}
-  @media(max-width:600px){.settings-form{padding:22px 18px;}.whatsapp-template-input{min-height:230px;}}
+  @media(max-width:600px){.settings-form{padding:22px 18px;}}
 
   /* ---------- Modal (producto) ---------- */
   .modal-overlay{position:fixed; inset:0; background:rgba(43,35,31,0.5); opacity:0; pointer-events:none; transition:opacity .2s; z-index:60;}
@@ -231,25 +229,24 @@
         <label>Alias de Mercado Pago<input type="text" name="transferAlias" placeholder="Ej: betania.fragancias.mp"></label>
         <p class="muted">Este alias aparecerá en el mensaje de WhatsApp cuando el cliente elija Mercado Pago.</p>
         <h2>Mensaje de WhatsApp</h2>
-        <p class="whatsapp-editor-help">Escribí el mensaje con los saltos de línea y espacios tal como querés que llegue por WhatsApp. Podés editarlo directamente en el cuadro; la vista previa se actualiza mientras escribís.</p>
-        <label>Editar mensaje<textarea class="whatsapp-template-input" name="whatsappMessageTemplate" rows="12" placeholder="Hola! Quiero hacer este pedido en {tienda}:\n\n{productos}\n\nTotal: {total}\nEntrega: {entrega}\nDirección: {direccion}\nPago: {pago}\nAlias de Mercado Pago: {alias}\nNombre: {nombre}\nTeléfono: {telefono}\nNotas: {notas}"></textarea></label>
         <div class="whatsapp-preview" aria-live="polite">
-          <p class="whatsapp-preview-heading">Vista previa del mensaje en WhatsApp</p>
-          <pre id="whatsapp-message-preview" class="whatsapp-preview-message">Hola! Quiero hacer este pedido en Betania Fragancias:
+          <p class="whatsapp-preview-heading">Ejemplo de cómo se verá el mensaje en WhatsApp</p>
+          <pre class="whatsapp-preview-message">Hola! Quiero hacer este pedido en Betania Fragancias:
 
 • Perfume de ejemplo x1 - $12.500
 
 Total: $12.500
+
 Entrega: Retiro en el local
 Pago: Mercado Pago
 Alias de Mercado Pago: betania.fragancias.mp
+El pago se coordina por WhatsApp; esperá la confirmación de la tienda.
 
 Nombre: Camila
 Teléfono: 351 555 1234
 Notas: Sin notas</pre>
-          <small class="whatsapp-preview-note">La vista previa usa datos de ejemplo. El mensaje real se completa con los datos del pedido del cliente.</small>
+          <small class="whatsapp-preview-note">Este es solo un ejemplo. Los datos del mensaje real se completan automáticamente con cada pedido.</small>
         </div>
-        <p class="muted">Variables disponibles: {tienda}, {productos}, {envio}, {total}, {entrega}, {direccion}, {pago}, {alias}, {nombre}, {telefono} y {notas}. Si dejás el editor vacío, se usará el mensaje habitual de la tienda. Para mostrar el alias de Mercado Pago, incluí la línea “Alias de Mercado Pago: {alias}”.</p>
         <label>Costo de envío ($)<input type="number" name="shippingCost" min="0" step="1"></label>
         <button type="submit" class="btn btn-primary">Guardar configuración</button>
       </form>
@@ -787,36 +784,8 @@ Notas: Sin notas</pre>
       form.elements.pickupAddress.value = settings.pickupAddress || '';
       form.elements.pickupHours.value = settings.pickupHours || '';
       form.elements.transferAlias.value = settings.transferAlias || '';
-      form.elements.whatsappMessageTemplate.value = settings.whatsappMessageTemplate || '';
-      updateWhatsappMessagePreview();
       form.elements.shippingCost.value = settings.shippingCost || 0;
     } catch(e) { /* silently fail */ }
-  }
-
-  function updateWhatsappMessagePreview(){
-    var field = document.querySelector('#settings-form [name="whatsappMessageTemplate"]');
-    var preview = document.getElementById('whatsapp-message-preview');
-    if(!field || !preview) return;
-    var template = String(field.value || '').trim();
-    if(!template){
-      template = 'Hola! Quiero hacer este pedido en {tienda}:\n\n{productos}\n\nTotal: {total}\n\nEntrega: {entrega}\nPago: {pago}\n\nNombre: {nombre}\nTeléfono: {telefono}\nNotas: {notas}';
-    }
-    var sampleValues = {
-      tienda: 'Betania Fragancias',
-      productos: '• Perfume de ejemplo x1 - $12.500',
-      envio: '$0',
-      total: '$12.500',
-      entrega: 'Retiro en el local',
-      direccion: 'Av. de ejemplo 123, Córdoba',
-      pago: 'Mercado Pago',
-      alias: 'betania.fragancias.mp',
-      nombre: 'Camila',
-      telefono: '351 555 1234',
-      notas: 'Sin notas'
-    };
-    preview.textContent = template.replace(/\{(tienda|productos|envio|total|entrega|direccion|pago|alias|nombre|telefono|notas)\}/g, function(match, key){
-      return sampleValues[key] == null ? '' : String(sampleValues[key]);
-    });
   }
 
   async function saveSettingsForm(e){
@@ -831,7 +800,6 @@ Notas: Sin notas</pre>
       pickupAddress: form.elements.pickupAddress.value.trim(),
       pickupHours: form.elements.pickupHours.value.trim(),
       transferAlias: form.elements.transferAlias.value.trim(),
-      whatsappMessageTemplate: form.elements.whatsappMessageTemplate.value,
       shippingCost: Number(form.elements.shippingCost.value) || 0
     };
     var btn = form.querySelector('button[type=submit]');
@@ -932,7 +900,6 @@ Notas: Sin notas</pre>
       if(sel) updateOrderStatus(sel.dataset.id, sel.value);
     });
 
-    document.getElementById('settings-form').elements.whatsappMessageTemplate.addEventListener('input', updateWhatsappMessagePreview);
     document.getElementById('settings-form').addEventListener('submit', saveSettingsForm);
     document.getElementById('password-form').addEventListener('submit', handleChangePassword);
   }
