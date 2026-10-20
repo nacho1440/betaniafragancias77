@@ -814,7 +814,7 @@ Notas: Sin notas</pre>
       telefono: '351 555 1234',
       notas: 'Sin notas'
     };
-    preview.textContent = template.replace(/\\{(tienda|productos|envio|total|entrega|direccion|pago|alias|nombre|telefono|notas)\\}/g, function(match, key){
+    preview.textContent = template.replace(/\{(tienda|productos|envio|total|entrega|direccion|pago|alias|nombre|telefono|notas)\}/g, function(match, key){
       return sampleValues[key] == null ? '' : String(sampleValues[key]);
     });
   }
