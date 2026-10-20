@@ -1009,20 +1009,44 @@
   }
 
   function buildWhatsappMessage(order){
+    var paymentLabels = { efectivo: 'Efectivo', tarjeta: 'Tarjeta', mercadopago: 'Mercado Pago' };
+    var productsText = order.items.map(function(i){ return '• ' + i.nombre + ' x' + i.qty + ' - ' + money(i.precio * i.qty); }).join('\n');
+    var deliveryText = order.entrega === 'envio' ? 'Envío a domicilio (todo el país)' : 'Retiro en el local';
+    var paymentText = paymentLabels[order.pago] || order.pago;
+    var aliasText = order.pago === 'mercadopago' ? (settings.transferAlias || 'Consultar alias con la tienda') : '';
+    var values = {
+      tienda: settings.storeName || 'la tienda',
+      productos: productsText,
+      envio: order.entrega === 'envio' ? (order.shipping > 0 ? money(order.shipping) : 'Sin costo') : 'No aplica (retiro en el local)',
+      total: money(order.total),
+      entrega: deliveryText,
+      direccion: order.entrega === 'envio' ? (order.direccion || '') : '',
+      pago: paymentText,
+      alias: aliasText,
+      nombre: order.nombre || '',
+      telefono: order.telefono || '',
+      notas: order.notas || ''
+    };
+    var template = String(settings.whatsappMessageTemplate || '').trim();
+    if(template){
+      return template.replace(/\{(tienda|productos|envio|total|entrega|direccion|pago|alias|nombre|telefono|notas)\}/g, function(match, key){
+        return values[key] == null ? '' : String(values[key]);
+      });
+    }
+
     var lines = [];
-    lines.push('Hola! Quiero hacer este pedido en ' + (settings.storeName||'la tienda') + ':');
+    lines.push('Hola! Quiero hacer este pedido en ' + values.tienda + ':');
     lines.push('');
-    order.items.forEach(function(i){ lines.push('• ' + i.nombre + ' x' + i.qty + ' - ' + money(i.precio * i.qty)); });
+    lines.push(productsText);
     lines.push('');
     if(order.entrega === 'envio' && order.shipping > 0) lines.push('Envío: ' + money(order.shipping));
     lines.push('Total: ' + money(order.total));
     lines.push('');
-    lines.push('Entrega: ' + (order.entrega === 'envio' ? 'Envío a domicilio (todo el país)' : 'Retiro en el local'));
+    lines.push('Entrega: ' + deliveryText);
     if(order.entrega === 'envio' && order.direccion) lines.push('Dirección: ' + order.direccion);
-    var paymentLabels = { efectivo: 'Efectivo', tarjeta: 'Tarjeta', mercadopago: 'Mercado Pago' };
-    lines.push('Pago: ' + (paymentLabels[order.pago] || order.pago));
+    lines.push('Pago: ' + paymentText);
     if(order.pago === 'mercadopago'){
-      lines.push('Alias de Mercado Pago: ' + (settings.transferAlias || 'Consultar alias con la tienda'));
+      lines.push('Alias de Mercado Pago: ' + aliasText);
       lines.push('El pago se coordina por WhatsApp; esperá la confirmación de la tienda.');
     }
     lines.push('');

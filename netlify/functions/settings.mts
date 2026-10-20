@@ -42,6 +42,7 @@ export default async (req: Request) => {
     if (body.pickupAddress !== undefined) updates.pickupAddress = String(body.pickupAddress).trim();
     if (body.pickupHours !== undefined) updates.pickupHours = String(body.pickupHours).trim();
     if (body.transferAlias !== undefined) updates.transferAlias = String(body.transferAlias).trim();
+    if (body.whatsappMessageTemplate !== undefined) updates.whatsappMessageTemplate = String(body.whatsappMessageTemplate);
     if (body.shippingCost !== undefined) updates.shippingCost = Number(body.shippingCost) || 0;
 
     const [row] = await db

@@ -222,6 +222,9 @@
         <label>Horario de retiro<input type="text" name="pickupHours" placeholder="Ej: Lun a vie, 10 a 19hs"></label>
         <label>Alias de Mercado Pago<input type="text" name="transferAlias" placeholder="Ej: betania.fragancias.mp"></label>
         <p class="muted">Este alias aparecerá en el mensaje de WhatsApp cuando el cliente elija Mercado Pago.</p>
+        <h2>Mensaje de WhatsApp</h2>
+        <label>Mensaje personalizado del pedido<textarea name="whatsappMessageTemplate" rows="9" placeholder="Hola! Quiero hacer este pedido en {tienda}:\n\n{productos}\n\nTotal: {total}\nEntrega: {entrega}\nDirección: {direccion}\nPago: {pago}\nAlias de Mercado Pago: {alias}\nNombre: {nombre}\nTeléfono: {telefono}\nNotas: {notas}"></textarea></label>
+        <p class="muted">Personalizá el texto que se abre en WhatsApp. Podés usar estas variables: {tienda}, {productos}, {envio}, {total}, {entrega}, {direccion}, {pago}, {alias}, {nombre}, {telefono} y {notas}. Si lo dejás vacío, se usa el mensaje habitual de la tienda. La variable {alias} se completa con el alias de Mercado Pago si corresponde.</p>
         <label>Costo de envío ($)<input type="number" name="shippingCost" min="0" step="1"></label>
         <button type="submit" class="btn btn-primary">Guardar configuración</button>
       </form>
@@ -759,6 +762,7 @@
       form.elements.pickupAddress.value = settings.pickupAddress || '';
       form.elements.pickupHours.value = settings.pickupHours || '';
       form.elements.transferAlias.value = settings.transferAlias || '';
+      form.elements.whatsappMessageTemplate.value = settings.whatsappMessageTemplate || '';
       form.elements.shippingCost.value = settings.shippingCost || 0;
     } catch(e) { /* silently fail */ }
   }
@@ -775,6 +779,7 @@
       pickupAddress: form.elements.pickupAddress.value.trim(),
       pickupHours: form.elements.pickupHours.value.trim(),
       transferAlias: form.elements.transferAlias.value.trim(),
+      whatsappMessageTemplate: form.elements.whatsappMessageTemplate.value,
       shippingCost: Number(form.elements.shippingCost.value) || 0
     };
     var btn = form.querySelector('button[type=submit]');
