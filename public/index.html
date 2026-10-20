@@ -406,6 +406,7 @@
   .detail-characteristics{display:flex; flex-wrap:wrap; gap:7px; margin:14px 0 0; min-width:0;}
   .detail-characteristics:empty{display:none;}
   .detail-characteristic{display:inline-flex; align-items:center; max-width:100%; overflow-wrap:anywhere; border:1px solid var(--arena-profunda); border-radius:100px; padding:5px 10px; background:var(--arena); color:var(--tinta-suave); font-size:0.78rem; font-weight:600;}
+  .detail-characteristic-long{display:inline-flex; flex-direction:column; align-items:center; text-align:center; line-height:1.2;}
   .detail-price{font-size:1.5rem; font-weight:700; color:var(--ciruela); font-family:var(--font-display); margin:0 0 6px;}
   @media (max-width:640px){
     .product-detail-body{grid-template-columns:1fr; gap:18px; padding:16px 20px 22px;}
@@ -963,7 +964,16 @@
     document.getElementById('detail-name').textContent = p.nombre;
     document.getElementById('detail-desc').textContent = p.descripcion || 'Sin descripción disponible.';
     var characteristics = String(p.caracteristicas || '').split(',').map(function(s){ return s.trim(); }).filter(Boolean);
-    document.getElementById('detail-characteristics').innerHTML = characteristics.map(function(s){ return '<span class="detail-characteristic">'+escapeHTML(s)+'</span>'; }).join('');
+    document.getElementById('detail-characteristics').innerHTML = characteristics.map(function(s){
+      var words = s.split(/\s+/).filter(Boolean);
+      if(words.length >= 3){
+        var splitAt = Math.ceil(words.length / 2);
+        var firstLine = words.slice(0, splitAt).join(' ');
+        var secondLine = words.slice(splitAt).join(' ');
+        return '<span class="detail-characteristic"><span class="detail-characteristic-long"><span>'+escapeHTML(firstLine)+'</span><span>'+escapeHTML(secondLine)+'</span></span></span>';
+      }
+      return '<span class="detail-characteristic">'+escapeHTML(s)+'</span>';
+    }).join('');
     document.getElementById('detail-price').textContent = money(p.precio);
     var addBtn = document.getElementById('detail-add-btn');
     addBtn.dataset.id = p.id;
